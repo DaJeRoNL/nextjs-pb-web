@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { Turnstile } from '@marsidev/react-turnstile'; // Import Turnstile
+import { Turnstile } from '@marsidev/react-turnstile';
 import Header from '../components/Header'; 
 import Footer from '../components/Footer'; 
 import { sendEmail } from '../actions'; 
@@ -61,14 +61,14 @@ const LoadingSpinner = () => (
   </div>
 );
 
-// --- FORM CONTENT COMPONENT ---
+// --- MAIN COMPONENT ---
 const ContactClient = () => {
   const searchParams = useSearchParams();
   const typeParam = searchParams.get('type');
   const [activeTab, setActiveTab] = useState('general');
   
   const [formData, setFormData] = useState<ContactFormData>({});
-  const [turnstileToken, setTurnstileToken] = useState<string | null>(null); // State for Turnstile Token
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [isFormValid, setIsFormValid] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); 
@@ -83,7 +83,7 @@ const ContactClient = () => {
     }
     setIsSubmitted(false); 
     setFormData({});
-    setTurnstileToken(null); // Reset token on tab change
+    setTurnstileToken(null);
     setIsFormValid(false);
     setIsSubmitting(false);
   }, [typeParam]);
@@ -155,7 +155,7 @@ const ContactClient = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isFormValid || !turnstileToken) return; // Prevent submit without token
+    if (!isFormValid || !turnstileToken) return;
     
     setIsSubmitting(true);
 
@@ -171,7 +171,7 @@ const ContactClient = () => {
         });
 
         payload.append('typeParam', activeTab);
-        payload.append('cf-turnstile-response', turnstileToken); // Send the token
+        payload.append('cf-turnstile-response', turnstileToken);
         
         const honeypotInput = (e.target as HTMLFormElement).querySelector('input[name="website_url"]') as HTMLInputElement;
         if (honeypotInput) {
@@ -184,7 +184,6 @@ const ContactClient = () => {
             setIsSubmitted(true);
         } else {
             alert(result.message);
-            // Optional: reset token on failure so user can try again
             setTurnstileToken(null); 
         }
     } catch (error) {
@@ -194,17 +193,6 @@ const ContactClient = () => {
         setIsSubmitting(false);
     }
   };
-
-  // UPDATED: Using onSuccess instead of onVerify
-  const TurnstileWidget = () => (
-    <div className="mt-4 mb-4">
-      <Turnstile 
-        siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''} 
-        onSuccess={(token) => setTurnstileToken(token)}
-        onExpire={() => setTurnstileToken(null)}
-      />
-    </div>
-  );
 
   return (
     <div className="min-h-screen relative" style={{ '--scroll': `${scrollY}px` } as React.CSSProperties}>
@@ -221,7 +209,6 @@ const ContactClient = () => {
       <div className="main-content pt-32 pb-16">
         <div className="container mx-auto px-6 max-w-6xl"> 
           <Suspense fallback={<LoadingSpinner />}>
-            {/* Render the actual form content here */}
             <div className="w-full max-w-[1400px] mx-auto shadow-2xl rounded-2xl overflow-hidden bg-white flex flex-col lg:flex-row min-h-[700px] animate-fadeIn">
               
               {/* LEFT PANEL */}
@@ -291,7 +278,13 @@ const ContactClient = () => {
                           
                           <div className="flex items-start mt-4"><input id="terms-client" name="terms" type="checkbox" onChange={handleInputChange} disabled={isSubmitting} className="mt-1 h-4 w-4 text-[var(--color-accent)] border-gray-300 rounded focus:ring-[var(--color-accent)] cursor-pointer" required /><label htmlFor="terms-client" className="ml-2 block text-xs text-gray-500">I agree to the <a href="/terms" target="_blank" className="underline hover:text-gray-800">Terms</a> & <a href="/privacy" target="_blank" className="underline hover:text-gray-800">Privacy Policy</a>.</label></div>
                           
-                          <TurnstileWidget />
+                          <div className="mt-4 mb-4">
+                            <Turnstile 
+                              siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''} 
+                              onSuccess={(token) => setTurnstileToken(token)}
+                              onExpire={() => setTurnstileToken(null)}
+                            />
+                          </div>
 
                           <button type="submit" disabled={!isFormValid || isSubmitting} className={`px-8 py-3 rounded-md font-bold font-montserrat text-sm uppercase tracking-wide transition-all duration-300 flex items-center shadow-md ${!isFormValid || isSubmitting ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-[var(--color-accent)] text-white hover:bg-orange-700 hover:shadow-lg translate-y-0'}`}>{isSubmitting ? 'Processing...' : <>Start Discovery <Icons.ArrowRight /></>}</button>
                           <p className="text-sm text-gray-400 text-left italic mt-4 pl-1 border-l-2 border-gray-200">Note: Submitting this form unlocks the option to book a meeting directly with our team.</p>
@@ -317,7 +310,13 @@ const ContactClient = () => {
                           
                           <div className="flex items-center mt-4"><input id="terms-talent" name="terms" type="checkbox" onChange={handleInputChange} disabled={isSubmitting} className="h-4 w-4 text-[var(--color-footer-bg)] border-gray-300 rounded focus:ring-[var(--color-footer-bg)] cursor-pointer" required /><label htmlFor="terms-talent" className="ml-2 block text-xs text-gray-500">I agree to the <a href="/terms" target="_blank" className="underline hover:text-gray-800">Terms</a> & <a href="/privacy" target="_blank" className="underline hover:text-gray-800">Privacy Policy</a>.</label></div>
                           
-                          <TurnstileWidget />
+                          <div className="mt-4 mb-4">
+                            <Turnstile 
+                              siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''} 
+                              onSuccess={(token) => setTurnstileToken(token)}
+                              onExpire={() => setTurnstileToken(null)}
+                            />
+                          </div>
 
                           <button type="submit" disabled={!isFormValid || isSubmitting} className={`w-full font-bold font-montserrat py-4 rounded-full transition-colors duration-300 shadow-md hover:shadow-lg mt-4 ${!isFormValid || isSubmitting ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-[var(--color-footer-bg)] text-white hover:bg-gray-800'}`}>{isSubmitting ? 'Sending Application...' : 'Submit Application'}</button>
                         </form>
@@ -333,7 +332,13 @@ const ContactClient = () => {
                           
                           <div className="flex items-center mt-4"><input id="terms-general" name="terms" type="checkbox" onChange={handleInputChange} disabled={isSubmitting} className="mt-1 h-4 w-4 text-[var(--color-primary)] border-gray-300 rounded focus:ring-[var(--color-primary)] cursor-pointer" required /><label htmlFor="terms-general" className="ml-2 block text-xs text-gray-500">I agree to the <a href="/terms" target="_blank" className="underline hover:text-gray-800">Terms</a> & <a href="/privacy" target="_blank" className="underline hover:text-gray-800">Privacy Policy</a>.</label></div>
                           
-                          <TurnstileWidget />
+                          <div className="mt-4 mb-4">
+                            <Turnstile 
+                              siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''} 
+                              onSuccess={(token) => setTurnstileToken(token)}
+                              onExpire={() => setTurnstileToken(null)}
+                            />
+                          </div>
 
                           <button type="submit" disabled={!isFormValid || isSubmitting} className={`w-full font-bold font-montserrat py-4 rounded-full transition-colors duration-300 shadow-md hover:shadow-lg mt-4 ${!isFormValid || isSubmitting ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)]'}`}>{isSubmitting ? 'Sending...' : 'Send Message'}</button>
                         </form>
