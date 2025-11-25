@@ -271,7 +271,7 @@ const ContactClient = () => {
                             <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Phone Number</label><input name="phone" type="tel" onChange={handleInputChange} disabled={isSubmitting} className="w-full px-4 py-3 bg-gray-50 rounded-md border border-gray-200 focus:bg-white focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] outline-none transition-all disabled:opacity-50" placeholder="+1 (555) 000-0000" required /></div>
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Service Interest</label><div className="relative"><select name="service" onChange={handleInputChange} disabled={isSubmitting} className="w-full px-4 py-3 bg-gray-50 rounded-md border border-gray-200 focus:bg-white focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] outline-none transition-all appearance-none text-gray-700 disabled:opacity-50"><option>Recruitment (PlaceByte)</option><option>Operations Team (OpsByte)</option><option>Systems & Automation (CoreByte)</option><option>Other / Not Sure</option></select><div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500"><svg className="fill-current h-4 w-4" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg></div></div></div>
+                            <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Service Interest</label><div className="relative"><select name="service" onChange={handleInputChange} disabled={isSubmitting} className="w-full px-4 py-3 bg-gray-50 rounded-md border border-gray-200 focus:bg-white focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] outline-none transition-all appearance-none text-gray-700 disabled:opacity-50"><option>Recruitment (PlaceByte)</option><option>Operations Team (OpsByte)</option><option><option>Systems & Automation (CoreByte)</option></option><option>Other / Not Sure</option></select><div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500"><svg className="fill-current h-4 w-4" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg></div></div></div>
                             <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Preferred Contact</label><div className="relative"><select name="contactMethod" onChange={handleInputChange} disabled={isSubmitting} className="w-full px-4 py-3 bg-gray-50 rounded-md border border-gray-200 focus:bg-white focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] outline-none transition-all appearance-none text-gray-700 disabled:opacity-50"><option>Email</option><option>Phone Call</option><option>WhatsApp</option></select><div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500"><svg className="fill-current h-4 w-4" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg></div></div></div>
                           </div>
                           <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Additional Details</label><textarea name="details" onChange={handleInputChange} disabled={isSubmitting} rows={3} className="w-full px-4 py-3 bg-gray-50 rounded-md border border-gray-200 focus:bg-white focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] outline-none transition-all resize-none disabled:opacity-50" placeholder="Tell us about your needs..."></textarea></div>
@@ -279,11 +279,18 @@ const ContactClient = () => {
                           <div className="flex items-start mt-4"><input id="terms-client" name="terms" type="checkbox" onChange={handleInputChange} disabled={isSubmitting} className="mt-1 h-4 w-4 text-[var(--color-accent)] border-gray-300 rounded focus:ring-[var(--color-accent)] cursor-pointer" required /><label htmlFor="terms-client" className="ml-2 block text-xs text-gray-500">I agree to the <a href="/terms" target="_blank" className="underline hover:text-gray-800">Terms</a> & <a href="/privacy" target="_blank" className="underline hover:text-gray-800">Privacy Policy</a>.</label></div>
                           
                           <div className="mt-4 mb-4">
-                            <Turnstile 
-                              siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''} 
-                              onSuccess={(token) => setTurnstileToken(token)}
-                              onExpire={() => setTurnstileToken(null)}
-                            />
+                            {/* Hide widget once token is successfully generated */}
+                            {turnstileToken ? (
+                                <p className="text-sm font-bold text-green-600 flex items-center gap-2">
+                                  <Icons.Check /> Security check passed!
+                                </p>
+                            ) : (
+                                <Turnstile 
+                                  siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''} 
+                                  onSuccess={(token) => setTurnstileToken(token)}
+                                  onExpire={() => setTurnstileToken(null)}
+                                />
+                            )}
                           </div>
 
                           <button type="submit" disabled={!isFormValid || isSubmitting} className={`px-8 py-3 rounded-md font-bold font-montserrat text-sm uppercase tracking-wide transition-all duration-300 flex items-center shadow-md ${!isFormValid || isSubmitting ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-[var(--color-accent)] text-white hover:bg-orange-700 hover:shadow-lg translate-y-0'}`}>{isSubmitting ? 'Processing...' : <>Start Discovery <Icons.ArrowRight /></>}</button>
@@ -311,11 +318,18 @@ const ContactClient = () => {
                           <div className="flex items-center mt-4"><input id="terms-talent" name="terms" type="checkbox" onChange={handleInputChange} disabled={isSubmitting} className="h-4 w-4 text-[var(--color-footer-bg)] border-gray-300 rounded focus:ring-[var(--color-footer-bg)] cursor-pointer" required /><label htmlFor="terms-talent" className="ml-2 block text-xs text-gray-500">I agree to the <a href="/terms" target="_blank" className="underline hover:text-gray-800">Terms</a> & <a href="/privacy" target="_blank" className="underline hover:text-gray-800">Privacy Policy</a>.</label></div>
                           
                           <div className="mt-4 mb-4">
-                            <Turnstile 
-                              siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''} 
-                              onSuccess={(token) => setTurnstileToken(token)}
-                              onExpire={() => setTurnstileToken(null)}
-                            />
+                            {/* Hide widget once token is successfully generated */}
+                            {turnstileToken ? (
+                                <p className="text-sm font-bold text-green-600 flex items-center gap-2">
+                                  <Icons.Check /> Security check passed!
+                                </p>
+                            ) : (
+                                <Turnstile 
+                                  siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''} 
+                                  onSuccess={(token) => setTurnstileToken(token)}
+                                  onExpire={() => setTurnstileToken(null)}
+                                />
+                            )}
                           </div>
 
                           <button type="submit" disabled={!isFormValid || isSubmitting} className={`w-full font-bold font-montserrat py-4 rounded-full transition-colors duration-300 shadow-md hover:shadow-lg mt-4 ${!isFormValid || isSubmitting ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-[var(--color-footer-bg)] text-white hover:bg-gray-800'}`}>{isSubmitting ? 'Sending Application...' : 'Submit Application'}</button>
@@ -333,11 +347,18 @@ const ContactClient = () => {
                           <div className="flex items-center mt-4"><input id="terms-general" name="terms" type="checkbox" onChange={handleInputChange} disabled={isSubmitting} className="mt-1 h-4 w-4 text-[var(--color-primary)] border-gray-300 rounded focus:ring-[var(--color-primary)] cursor-pointer" required /><label htmlFor="terms-general" className="ml-2 block text-xs text-gray-500">I agree to the <a href="/terms" target="_blank" className="underline hover:text-gray-800">Terms</a> & <a href="/privacy" target="_blank" className="underline hover:text-gray-800">Privacy Policy</a>.</label></div>
                           
                           <div className="mt-4 mb-4">
-                            <Turnstile 
-                              siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''} 
-                              onSuccess={(token) => setTurnstileToken(token)}
-                              onExpire={() => setTurnstileToken(null)}
-                            />
+                            {/* Hide widget once token is successfully generated */}
+                            {turnstileToken ? (
+                                <p className="text-sm font-bold text-green-600 flex items-center gap-2">
+                                  <Icons.Check /> Security check passed!
+                                </p>
+                            ) : (
+                                <Turnstile 
+                                  siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''} 
+                                  onSuccess={(token) => setTurnstileToken(token)}
+                                  onExpire={() => setTurnstileToken(null)}
+                                />
+                            )}
                           </div>
 
                           <button type="submit" disabled={!isFormValid || isSubmitting} className={`w-full font-bold font-montserrat py-4 rounded-full transition-colors duration-300 shadow-md hover:shadow-lg mt-4 ${!isFormValid || isSubmitting ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)]'}`}>{isSubmitting ? 'Sending...' : 'Send Message'}</button>
