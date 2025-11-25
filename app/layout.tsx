@@ -27,8 +27,10 @@ const homemadeApple = Homemade_Apple({
 export const metadata: Metadata = {
   title: "PlaceByte",
   description: "Engineered for Growth",
-  icons: {
-    icon: '/PB Favicon.png',
+  openGraph: {
+    title: "PlaceByte - Engineered for Growth",
+    description: "Recruitment, Operations, and Systems Automation.",
+    images: ['/PB Favicon.png'],
   },
 };
 

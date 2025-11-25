@@ -5,9 +5,6 @@ const nextConfig = {
       bodySizeLimit: '5mb', 
     },
   },
-  images: {
-    unoptimized: true,
-  },
   eslint: {
     ignoreDuringBuilds: true,
   },

@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
-import Header from './components/Header'; // Uses the shared Header (SVG Logo)
-import Footer from './components/Footer'; // Uses the shared Footer
+import Image from 'next/image'; // IMPORT ADDED
+import Header from './components/Header'; 
+import Footer from './components/Footer'; 
 
 /* --- HOOKS --- */
 const useScrollReveal = (ref: any, delay = 0, threshold = 0.1) => {
@@ -214,8 +215,15 @@ const ServicesSection = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {services.map((service, index) => (
               <div key={index} className="flex flex-col bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group">
+                {/* UPDATED IMAGE COMPONENT */}
                 <div className="h-48 relative overflow-hidden clip-diagonal-bottom">
-                  <img src={service.image} alt={service.title} loading="lazy" className="service-card-image w-full h-full object-cover" />
+                  <Image 
+                    src={service.image} 
+                    alt={service.title} 
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="service-card-image object-cover" 
+                  />
                 </div>
                 <div className="p-8 flex flex-col flex-grow">
                   <h3 className="font-montserrat font-bold text-2xl mb-4" style={{ color: service.color }}>{service.title}</h3>
