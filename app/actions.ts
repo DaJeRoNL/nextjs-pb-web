@@ -25,33 +25,32 @@ const formSchema = z.object({
 
 export async function sendEmail(prevState: any, formData: FormData) {
   try {
-    console.log("--- New Form Submission Started ---");
-    
     const rawData: Record<string, any> = {};
     const turnstileToken = formData.get('cf-turnstile-response');
 
-    // Filter non-text data
+    // Filter non-text data (like 'cv' and turnstile token) from rawData
     formData.forEach((value, key) => {
         if (key !== 'cv' && key !== 'cf-turnstile-response') {
             rawData[key] = value;
         }
     });
 
-    // 1. Bot Protection
+    // 1. Bot Protection (Honeypot)
     if (rawData.website_url && rawData.website_url.length > 0) {
       console.warn("Bot attempt blocked (honeypot).");
       return { success: false, message: "Spam detected." };
     }
     
-    // 2. Turnstile Verification
+    // 2. Cloudflare Turnstile Verification
     if (!turnstileToken || typeof turnstileToken !== 'string') {
-        console.error("Turnstile token missing");
         return { success: false, message: "Security check missing. Please refresh and try again." };
     }
 
     const verifyResult = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
             secret: process.env.TURNSTILE_SECRET_KEY,
             response: turnstileToken,
@@ -59,6 +58,7 @@ export async function sendEmail(prevState: any, formData: FormData) {
     });
 
     const verifyOutcome = await verifyResult.json();
+
     if (!verifyOutcome.success) {
         console.error("Turnstile verification failed:", verifyOutcome);
         return { success: false, message: "Security check failed. Please reload and try again." };
@@ -66,56 +66,34 @@ export async function sendEmail(prevState: any, formData: FormData) {
 
     // 3. Validate Data
     const validatedFields = formSchema.safeParse(rawData);
+    
     if (!validatedFields.success) {
-      console.error("Validation failed:", validatedFields.error);
       return { success: false, message: "Invalid data. Please check your inputs." };
     }
 
     const data = validatedFields.data;
 
-    // --- DEBUGGING FILE ATTACHMENT ---
     const file = formData.get('cv'); 
     let attachments = [];
-
-    console.log("File retrieval debug:");
-    console.log("- Raw value from formData:", file);
-    // console.log("- Type of file:", typeof file); // Can be misleading in server environment
-    console.log("- Is instance of File?", file instanceof File);
-
-    if (file instanceof File) {
-        console.log("- File name:", file.name);
-        console.log("- File size:", file.size);
-        console.log("- File type:", file.type);
-
-        if (file.size > 0) {
-            if (file.size > 5 * 1024 * 1024) {
-                console.error("File too large");
-                return { success: false, message: "File too large (max 5MB)" };
-            }
-
-            try {
-                const arrayBuffer = await file.arrayBuffer();
-                const buffer = Buffer.from(arrayBuffer);
-                
-                attachments.push({
-                    filename: file.name,
-                    content: buffer, 
-                });
-                console.log("File successfully processed and added to attachments array.");
-            } catch (fileError) {
-                console.error("Error processing file buffer:", fileError);
-            }
-        } else {
-            console.warn("File found but size is 0 bytes.");
-        }
-    } else {
-        console.warn("No valid file object found in 'cv' field.");
+    
+    // Use 'instanceof File' and size check for reliable file detection
+    if (file instanceof File && file.size > 0) {
+    
+      if (file.size > 5 * 1024 * 1024) {
+        return { success: false, message: "File too large (max 5MB)" };
+      }
+    
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      attachments.push({
+        filename: file.name,
+        content: buffer.toString("base64"),
+        type: file.type || "application/pdf",
+        disposition: "attachment",
+      });
     }
 
-    // 4. Send Email
-    console.log("Attempting to send email via Resend...");
-    console.log("Attachments count:", attachments.length);
-
+    // 4. HTML Email Template
     const emailHtml = `
       <div style="font-family: sans-serif; padding: 20px; color: #333;">
         <h2 style="color: #000;">New Submission: ${data.name}</h2>
@@ -124,6 +102,7 @@ export async function sendEmail(prevState: any, formData: FormData) {
         <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
           ${Object.entries(data).map(([key, value]) => {
             if (['website_url', 'typeParam', 'terms'].includes(key) || !value) return '';
+            
             return `
               <tr>
                 <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold; width: 180px; text-transform: capitalize;">
@@ -139,7 +118,7 @@ export async function sendEmail(prevState: any, formData: FormData) {
       </div>
     `;
 
-    const result = await resend.emails.send({
+    await resend.emails.send({
       from: "PlaceByte <noreply@placebyte.com>",
       to: ["team@placebyte.com"],
       subject: `Inquiry from ${data.name} (${data.company || "No company"})`,
@@ -147,16 +126,10 @@ export async function sendEmail(prevState: any, formData: FormData) {
       attachments,
     });
 
-    if (result.error) {
-        console.error("Resend API Error:", result.error);
-        return { success: false, message: 'Failed to send email via provider.' };
-    }
-
-    console.log("Email sent successfully!", result);
     return { success: true, message: 'Email sent successfully!' };
 
   } catch (error) {
-    console.error('UNEXPECTED ERROR in sendEmail:', error);
+    console.error('Email sending error:', error);
     return { success: false, message: 'Failed to send email. Please try again later.' };
   }
 }

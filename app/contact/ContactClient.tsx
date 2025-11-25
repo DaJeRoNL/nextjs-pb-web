@@ -103,6 +103,11 @@ const ContactClient = () => {
           target.value = ''; 
           return;
         }
+        if (file.size === 0) {
+          alert("This file is empty. Please upload a valid PDF.");
+          target.value = '';
+          return;
+        }
         if (file.size > 5 * 1024 * 1024) { 
           alert("File size too large. Max limit is 5MB.");
           target.value = '';
