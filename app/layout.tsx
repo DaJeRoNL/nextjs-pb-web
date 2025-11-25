@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat, Raleway, Arimo, Homemade_Apple } from "next/font/google";
 import "./globals.css";
 import CookieConsent from "./components/CookieConsent";
+import SmoothScrolling from "./components/SmoothScrolling"; // IMPORT THIS
 
 const montserrat = Montserrat({ 
   subsets: ["latin"],
@@ -31,11 +32,10 @@ export const metadata: Metadata = {
   },
   description: "Recruitment, Operations, and Systems Automation for modern teams.",
   icons: {
-    icon: '/favicon.png',      // Standard favicon
-    shortcut: '/favicon.png',  // For older browsers
-    apple: '/favicon.png',     // For iPhone/iPad home screen
+    icon: '/icon.png',
+    shortcut: '/icon.png',
+    apple: '/icon.png',
   },
-
   openGraph: {
     title: 'PlaceByte',
     description: 'Where People, Platforms, and Performance come together.',
@@ -43,9 +43,10 @@ export const metadata: Metadata = {
     siteName: 'PlaceByte',
     images: [
       {
-        url: '/favicon.png',
-        width: 600,
-        height: 315,
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'PlaceByte - Engineered for Growth',
       },
     ],
     locale: 'en_US',
@@ -61,8 +62,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${montserrat.variable} ${raleway.variable} ${arimo.variable} ${homemadeApple.variable}`}>
-        {children}
-        <CookieConsent />
+        {/* Wrap children in SmoothScrolling */}
+        <SmoothScrolling>
+          {children}
+          <CookieConsent />
+        </SmoothScrolling>
       </body>
     </html>
   );
