@@ -2,43 +2,21 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 
-// --- HOOKS ---
-const useScrollY = () => {
+export default function AboutPage() {
+  // Parallax scroll state
   const [scrollY, setScrollY] = useState(0);
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      return () => window.removeEventListener('scroll', handleScroll);
+    }
   }, []);
-  return scrollY;
-};
-
-const useScrollReveal = (ref: any, delay = 0, threshold = 0.1) => {
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          element.style.animationDelay = `${delay}ms`;
-          element.classList.add('visible', 'scroll-reveal');
-          observer.unobserve(element);
-        }
-      },
-      { threshold }
-    );
-
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, [ref, delay, threshold]);
-};
-
-export default function AboutPage() {
-  const scrollY = useScrollY();
 
   const heroRef = useRef<HTMLDivElement>(null);
   const missionRef = useRef<HTMLDivElement>(null);
@@ -58,6 +36,7 @@ export default function AboutPage() {
     { ref: ctaRef, name: 'Contact' },
   ];
 
+  // Scroll Spy Logic
   useEffect(() => {
     const handleScroll = () => {
       const scrollPos = window.scrollY + window.innerHeight / 3;
@@ -82,6 +61,7 @@ export default function AboutPage() {
     ref.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
+  // Consolidated Hooks
   useScrollReveal(heroRef, 0);
   useScrollReveal(missionRef, 150);
   useScrollReveal(valuesRef, 300);
@@ -170,18 +150,15 @@ export default function AboutPage() {
 
             <section ref={missionRef} className="py-10 text-center">
               <div className="max-w-2xl mx-auto">
-                {/* USE VARIABLE FOR FONT-FAMILY */}
                 <h2 className="text-7xl md:text-7xl text-[var(--color-footer-bg)] font-handwriting">
                   Our Mission
                 </h2>
-                {/* RALEWAY THIN ITALIC 100 */}
                 <p className="font-raleway font-thin italic text-gray-700 leading-relaxed text-2xl md:text-3xl px-4">
                   &quot;We aim to redefine how businesses scale their workforce by blending smart recruitment, operational excellence, and workspace optimization. What started as a simple idea connecting talent with opportunity has evolved into a complete ecosystem of people, systems, and performance.&quot;
                 </p>
               </div>
             </section>
 
-            {/* ... (Rest of file remains same) ... */}
             <section ref={valuesRef}>
               <h2 className="font-montserrat font-bold text-3xl text-[var(--color-footer-bg)] mb-10 text-left px-4 border-l-8 border-[var(--color-accent)] pl-6">Core Values</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -300,10 +277,12 @@ export default function AboutPage() {
                 </p>
 
                 <div className="relative inline-block">
-                  {/* SPLASH GRAPHIC BEHIND BUTTON */}
-                  <img 
+                  {/* Optimized CTA Image */}
+                  <Image 
                     src="/cta-splash.png" 
-                    alt="" 
+                    alt="Background Splash" 
+                    width={300} 
+                    height={300}
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-auto opacity-60 pointer-events-none z-0"
                   />
                   <Link

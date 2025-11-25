@@ -1,7 +1,12 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
-export const useScrollReveal = (ref: React.RefObject<HTMLDivElement>, delay = 0, threshold = 0.1) => {
+// Fixed 'any' type to proper React Ref type
+export const useScrollReveal = (
+  ref: React.RefObject<HTMLElement | null>, 
+  delay = 0, 
+  threshold = 0.1
+) => {
   useEffect(() => {
     const element = ref.current;
     if (!element) return;

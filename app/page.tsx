@@ -2,49 +2,22 @@
 
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
-import Image from 'next/image'; // IMPORT ADDED
+import Image from 'next/image';
 import Header from './components/Header'; 
 import Footer from './components/Footer'; 
+import { useScrollReveal } from './hooks/useScrollReveal';
+import { useElementInView } from './hooks/useElementInView';
 
-/* --- HOOKS --- */
-const useScrollReveal = (ref: React.RefObject<HTMLElement | null>, delay = 0, threshold = 0.1) => {
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          element.style.animationDelay = `${delay}ms`;
-          element.classList.add('visible', 'scroll-reveal');
-          observer.unobserve(element); 
-        }
-      }, { threshold }
-    );
-    observer.observe(element);
-    return () => { if (element) observer.unobserve(element); };
-  }, [ref, delay, threshold]);
-};
-
-const useElementInView = (ref: any) => {
-  const [isInView, setIsInView] = useState(false);
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setIsInView(entry.isIntersecting), { threshold: 0 }
-    );
-    observer.observe(element);
-    return () => { if (element) observer.unobserve(element); };
-  }, [ref]);
-  return isInView;
-};
-
+/* --- LOCAL SCROLL HOOK --- */
+// Keeps the specific logic for the homepage parallax effect
 const useScrollY = () => {
   const [scrollY, setScrollY] = useState(0);
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    if (typeof window !== 'undefined') {
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        return () => window.removeEventListener("scroll", handleScroll);
+    }
   }, []);
   return scrollY;
 };
@@ -195,6 +168,7 @@ const HeroSection = () => {
 
 const ServicesSection = () => {
   const wrapperRef = useRef(null);
+  // Using shared hook
   useScrollReveal(wrapperRef, 0, 0.25);
 
   const services = [
@@ -215,7 +189,7 @@ const ServicesSection = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {services.map((service, index) => (
               <div key={index} className="flex flex-col bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group">
-                {/* UPDATED IMAGE COMPONENT */}
+                {/* Optimized Image Component */}
                 <div className="h-48 relative overflow-hidden clip-diagonal-bottom">
                   <Image 
                     src={service.image} 
@@ -243,6 +217,7 @@ const ServicesSection = () => {
 
 const CTABeforeFooter = () => {
   const ctaRef = useRef(null);
+  // Using shared hook
   useScrollReveal(ctaRef, 100);
   return (
     <section className="pt-16 pb-32 relative z-10"> 
@@ -294,6 +269,7 @@ const ScrollToTopButton = () => {
 /* --- MAIN APP COMPONENT --- */
 export default function App() {
   const aboutRef = useRef(null);
+  // Using shared hook
   const aboutSectionInView = useElementInView(aboutRef); 
   useScrollReveal(aboutRef, 100); 
   const scrollY = useScrollY(); 
