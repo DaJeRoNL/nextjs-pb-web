@@ -47,7 +47,7 @@ export default function Header() {
         <div className="w-full h-full relative px-4 md:px-10">
           
           <Link href="/" className="absolute" style={{ top: '100%', left: '1.5rem', marginTop: '0.85rem' }}>
-            <img src={faviconLogoUrl} alt="PlaceByte Favicon" className="transition-all duration-300 ease-in-out hover:scale-110" style={{ height: '70px' }} />
+            <img src={faviconLogoUrl} alt="PlaceByte Favicon" className="transition-all duration-300 ease-in-out hover:scale-110" style={{ height: '60px' }} />
           </Link>
           
           <div className="absolute bg-white rounded-full shadow-lg px-4 py-2" style={{ top: '100%', right: '1.5rem', marginTop: '0.85rem' }}>

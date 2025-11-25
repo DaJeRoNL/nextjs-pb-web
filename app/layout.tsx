@@ -30,6 +30,12 @@ export const metadata: Metadata = {
     default: 'PlaceByte - Engineered for Growth',
   },
   description: "Recruitment, Operations, and Systems Automation for modern teams.",
+  icons: {
+    icon: '/favicon.png',      // Standard favicon
+    shortcut: '/favicon.png',  // For older browsers
+    apple: '/favicon.png',     // For iPhone/iPad home screen
+  },
+
   openGraph: {
     title: 'PlaceByte',
     description: 'Where People, Platforms, and Performance come together.',
@@ -37,7 +43,7 @@ export const metadata: Metadata = {
     siteName: 'PlaceByte',
     images: [
       {
-        url: '/PB Favicon.png',
+        url: '/favicon.png',
         width: 600,
         height: 315,
       },
