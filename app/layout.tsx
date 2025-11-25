@@ -43,9 +43,9 @@ export const metadata: Metadata = {
     siteName: 'PlaceByte',
     images: [
       {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
+        url: '/favicon.png',
+        width: 600,
+        height: 315,
         alt: 'PlaceByte - Engineered for Growth',
       },
     ],

@@ -4,7 +4,7 @@ import { ReactLenis } from '@studio-freight/react-lenis';
 
 function SmoothScrolling({ children }: { children: React.ReactNode }) {
   return (
-    <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothWheel: true }}>
+    <ReactLenis root options={{ lerp: 0.15, duration: 1.2, smoothWheel: true }}>
       {children}
     </ReactLenis>
   );
