@@ -25,12 +25,25 @@ const homemadeApple = Homemade_Apple({
 });
 
 export const metadata: Metadata = {
-  title: "PlaceByte",
-  description: "Engineered for Growth",
+  title: {
+    template: '%s | PlaceByte',
+    default: 'PlaceByte - Engineered for Growth',
+  },
+  description: "Recruitment, Operations, and Systems Automation for modern teams.",
   openGraph: {
-    title: "PlaceByte - Engineered for Growth",
-    description: "Recruitment, Operations, and Systems Automation.",
-    images: ['/PB Favicon.png'],
+    title: 'PlaceByte',
+    description: 'Where People, Platforms, and Performance come together.',
+    url: 'https://placebyte.com',
+    siteName: 'PlaceByte',
+    images: [
+      {
+        url: '/PB Favicon.png',
+        width: 600,
+        height: 315,
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
   },
 };
 

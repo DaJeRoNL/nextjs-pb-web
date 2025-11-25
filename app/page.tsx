@@ -7,7 +7,7 @@ import Header from './components/Header';
 import Footer from './components/Footer'; 
 
 /* --- HOOKS --- */
-const useScrollReveal = (ref: any, delay = 0, threshold = 0.1) => {
+const useScrollReveal = (ref: React.RefObject<HTMLElement | null>, delay = 0, threshold = 0.1) => {
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
