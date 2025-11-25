@@ -32,9 +32,9 @@ export const metadata: Metadata = {
   },
   description: "Recruitment, Operations, and Systems Automation for modern teams.",
   icons: {
-    icon: '/icon.png',
-    shortcut: '/icon.png',
-    apple: '/icon.png',
+    icon: '/favicon.png',
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
   },
   openGraph: {
     title: 'PlaceByte',

@@ -8,20 +8,6 @@ import Footer from './components/Footer';
 import { useScrollReveal } from './hooks/useScrollReveal';
 import { useElementInView } from './hooks/useElementInView';
 
-/* --- LOCAL SCROLL HOOK --- */
-// Keeps the specific logic for the homepage parallax effect
-const useScrollY = () => {
-  const [scrollY, setScrollY] = useState(0);
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    if (typeof window !== 'undefined') {
-        window.addEventListener("scroll", handleScroll, { passive: true });
-        return () => window.removeEventListener("scroll", handleScroll);
-    }
-  }, []);
-  return scrollY;
-};
-
 const useScrollToTop = () => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -168,7 +154,6 @@ const HeroSection = () => {
 
 const ServicesSection = () => {
   const wrapperRef = useRef(null);
-  // Using shared hook
   useScrollReveal(wrapperRef, 0, 0.25);
 
   const services = [
@@ -189,7 +174,6 @@ const ServicesSection = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {services.map((service, index) => (
               <div key={index} className="flex flex-col bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group">
-                {/* Optimized Image Component */}
                 <div className="h-48 relative overflow-hidden clip-diagonal-bottom">
                   <Image 
                     src={service.image} 
@@ -217,7 +201,6 @@ const ServicesSection = () => {
 
 const CTABeforeFooter = () => {
   const ctaRef = useRef(null);
-  // Using shared hook
   useScrollReveal(ctaRef, 100);
   return (
     <section className="pt-16 pb-32 relative z-10"> 
@@ -269,18 +252,31 @@ const ScrollToTopButton = () => {
 /* --- MAIN APP COMPONENT --- */
 export default function App() {
   const aboutRef = useRef(null);
-  // Using shared hook
+  const mainContainerRef = useRef<HTMLDivElement>(null); 
+  
   const aboutSectionInView = useElementInView(aboutRef); 
   useScrollReveal(aboutRef, 100); 
-  const scrollY = useScrollY(); 
 
-  // Force Scroll to Top on Load
   useScrollToTop();
+
+  // OPTIMIZED SCROLL LISTENER: Updates DOM directly, avoids React re-renders
+  useEffect(() => {
+    const handleScroll = () => {
+      if (mainContainerRef.current) {
+        mainContainerRef.current.style.setProperty('--scroll', `${window.scrollY}px`);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <>
-      {/* No StyleInjector anymore! */}
-      <div className="min-h-screen relative" style={{ '--scroll': `${scrollY}px` } as React.CSSProperties}>
+      <div 
+        ref={mainContainerRef}
+        className="min-h-screen relative" 
+        style={{ '--scroll': '0px' } as React.CSSProperties} // Default value
+      >
         
         <div className="fixed-background">
           <div className="glass-blob-1"></div>
@@ -315,7 +311,6 @@ export default function App() {
 
           <CTABeforeFooter />
 
-          {/* Shared Footer */}
           <Footer />
 
         </div>

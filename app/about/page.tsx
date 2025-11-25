@@ -8,14 +8,17 @@ import Header from '../components/Header';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 
 export default function AboutPage() {
-  // Parallax scroll state
-  const [scrollY, setScrollY] = useState(0);
+  const mainContainerRef = useRef<HTMLDivElement>(null);
+
+  // OPTIMIZED SCROLL LISTENER
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    if (typeof window !== 'undefined') {
-      window.addEventListener('scroll', handleScroll, { passive: true });
-      return () => window.removeEventListener('scroll', handleScroll);
-    }
+    const handleScroll = () => {
+      if (mainContainerRef.current) {
+        mainContainerRef.current.style.setProperty('--scroll', `${window.scrollY}px`);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const heroRef = useRef<HTMLDivElement>(null);
@@ -36,7 +39,6 @@ export default function AboutPage() {
     { ref: ctaRef, name: 'Contact' },
   ];
 
-  // Scroll Spy Logic
   useEffect(() => {
     const handleScroll = () => {
       const scrollPos = window.scrollY + window.innerHeight / 3;
@@ -61,7 +63,6 @@ export default function AboutPage() {
     ref.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
-  // Consolidated Hooks
   useScrollReveal(heroRef, 0);
   useScrollReveal(missionRef, 150);
   useScrollReveal(valuesRef, 300);
@@ -77,7 +78,11 @@ export default function AboutPage() {
   }, []);
 
   return (
-    <div className="min-h-screen relative bg-gray-50" style={{ '--scroll': `${scrollY}px` } as React.CSSProperties}>
+    <div 
+      ref={mainContainerRef}
+      className="min-h-screen relative bg-gray-50" 
+      style={{ '--scroll': '0px' } as React.CSSProperties}
+    >
       
       <div className="fixed-background">
         <div className="glass-blob-static-1"></div>
@@ -277,7 +282,6 @@ export default function AboutPage() {
                 </p>
 
                 <div className="relative inline-block">
-                  {/* Optimized CTA Image */}
                   <Image 
                     src="/cta-splash.png" 
                     alt="Background Splash" 
