@@ -49,14 +49,22 @@ export async function sendEmail(prevState: any, formData: FormData) {
 
     // 3. Handle CV Attachment
     const file = formData.get('cv') as File | null;
+
+    if (file && file.size > 5 * 1024 * 1024) {
+      return { success: false, message: "File too large (max 5MB)" };
+    }
+
     let attachments = [];
     
     if (file && file.size > 0 && file.name !== 'undefined') {
+    
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
       attachments.push({
         filename: file.name,
-        content: buffer,
+        content: buffer.toString("base64"),
+        type: file.type || "application/pdf",
+        disposition: "attachment",
       });
     }
 
@@ -85,11 +93,6 @@ export async function sendEmail(prevState: any, formData: FormData) {
       </div>
     `;
 
-    // 5. SEND EMAIL
-    // IMPORTANT: 
-    // - 'from': MUST be onboarding@resend.dev until you verify placebyte.com
-    // - 'to': MUST be the email you used to sign up for Resend (e.g., your personal email) until you verify domain
-    
     await resend.emails.send({
       from: "PlaceByte <noreply@placebyte.com>",
       to: ["team@placebyte.com"],

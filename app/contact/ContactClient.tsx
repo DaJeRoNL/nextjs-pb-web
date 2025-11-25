@@ -72,6 +72,8 @@ const ContactClient = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false); 
 
+  const scrollY = useScrollY();
+
   useEffect(() => {
     if (typeParam === 'client' || typeParam === 'talent') {
       setActiveTab(typeParam);
@@ -272,7 +274,7 @@ const ContactClient = () => {
 
                       {/* TALENT FORM */}
                       {activeTab === 'talent' && (
-                        <form className="space-y-6 animate-fadeIn" onSubmit={handleSubmit}>
+                        <form encType="multipart/form-data" className="space-y-6 animate-fadeIn" onSubmit={handleSubmit}>
                           <input type="text" name="website_url" style={{display:'none'}} tabIndex={-1} autoComplete="off" />
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="md:col-span-2"><label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Full Legal Name</label><input name="name" type="text" onChange={handleInputChange} disabled={isSubmitting} className="w-full px-4 py-3 bg-gray-50 rounded-md border border-gray-200 focus:bg-white focus:border-[var(--color-footer-bg)] focus:ring-1 focus:ring-[var(--color-footer-bg)] outline-none transition-all disabled:opacity-50" required /></div>
