@@ -91,11 +91,11 @@ export async function sendEmail(prevState: any, formData: FormData) {
     // - 'to': MUST be the email you used to sign up for Resend (e.g., your personal email) until you verify domain
     
     await resend.emails.send({
-      from: 'PlaceByte Website <onboarding@resend.dev>',
-      to: ['team@placebyte.com'], // ⚠️ Change this to your PERSONAL signup email if "team@" is not the signup email
-      subject: `PlaceByte Inquiry: ${data.name} (${data.typeParam})`,
+      from: "PlaceByte <noreply@placebyte.com>",
+      to: ["team@placebyte.com"],
+      subject: `Inquiry from ${data.name} (${data.company || "No company"})`,
       html: emailHtml,
-      attachments: attachments,
+      attachments,
     });
 
     return { success: true, message: 'Email sent successfully!' };
