@@ -28,6 +28,7 @@ export default function Footer() {
   const toggleMotion = () => {
     const newState = !reduceMotion;
     setReduceMotion(newState);
+
     if (newState) {
       localStorage.setItem('placebyte_reduce_motion', 'true');
       document.documentElement.classList.add('reduce-motion');
@@ -35,6 +36,10 @@ export default function Footer() {
       localStorage.removeItem('placebyte_reduce_motion');
       document.documentElement.classList.remove('reduce-motion');
     }
+
+    setTimeout(() => {
+      window.location.reload();
+    }, 150);
   };
 
   return (

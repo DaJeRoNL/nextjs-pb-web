@@ -3,7 +3,7 @@
 import { Resend } from 'resend';
 import { z } from 'zod';
 
-// Ensure your RESEND_API_KEY is in your .env.local file
+// Ensure your RESEND_API_KEY and TURNSTILE_SECRET_KEY are in your .env.local file
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const formSchema = z.object({
@@ -32,13 +32,38 @@ export async function sendEmail(prevState: any, formData: FormData) {
         }
     });
 
-    // 1. Bot Protection
+    // 1. Bot Protection (Honeypot)
     if (rawData.website_url && rawData.website_url.length > 0) {
-      console.warn("Bot attempt blocked.");
+      console.warn("Bot attempt blocked (honeypot).");
       return { success: false, message: "Spam detected." };
     }
 
-    // 2. Validate Data
+    // 2. Cloudflare Turnstile Verification
+    const turnstileToken = formData.get('cf-turnstile-response');
+    
+    if (!turnstileToken || typeof turnstileToken !== 'string') {
+        return { success: false, message: "Security check missing. Please refresh and try again." };
+    }
+
+    const verifyResult = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            secret: process.env.TURNSTILE_SECRET_KEY,
+            response: turnstileToken,
+        }),
+    });
+
+    const verifyOutcome = await verifyResult.json();
+
+    if (!verifyOutcome.success) {
+        console.error("Turnstile verification failed:", verifyOutcome);
+        return { success: false, message: "Security check failed. Please reload and try again." };
+    }
+
+    // 3. Validate Data
     const validatedFields = formSchema.safeParse(rawData);
     
     if (!validatedFields.success) {
@@ -47,7 +72,7 @@ export async function sendEmail(prevState: any, formData: FormData) {
 
     const data = validatedFields.data;
 
-    // 3. Handle CV Attachment
+    // 4. Handle CV Attachment
     const file = formData.get('cv') as File | null;
 
     if (file && file.size > 5 * 1024 * 1024) {
@@ -68,7 +93,7 @@ export async function sendEmail(prevState: any, formData: FormData) {
       });
     }
 
-    // 4. HTML Email Template
+    // 5. HTML Email Template
     const emailHtml = `
       <div style="font-family: sans-serif; padding: 20px; color: #333;">
         <h2 style="color: #000;">New Submission: ${data.name}</h2>
