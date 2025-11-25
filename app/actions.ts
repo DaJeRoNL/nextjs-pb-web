@@ -3,7 +3,7 @@
 import { Resend } from 'resend';
 import { z } from 'zod';
 
-// Ensure your RESEND_API_KEY and TURNSTILE_SECRET_KEY are in your .env.local file
+// Ensure your RESEND_API_KEY is in your .env.local file
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const formSchema = z.object({
@@ -26,8 +26,11 @@ const formSchema = z.object({
 export async function sendEmail(prevState: any, formData: FormData) {
   try {
     const rawData: Record<string, any> = {};
+    const turnstileToken = formData.get('cf-turnstile-response');
+
+    // Filter non-text data (like 'cv' and turnstile token) from rawData
     formData.forEach((value, key) => {
-        if (key !== 'cv') {
+        if (key !== 'cv' && key !== 'cf-turnstile-response') {
             rawData[key] = value;
         }
     });
@@ -37,10 +40,8 @@ export async function sendEmail(prevState: any, formData: FormData) {
       console.warn("Bot attempt blocked (honeypot).");
       return { success: false, message: "Spam detected." };
     }
-
-    // 2. Cloudflare Turnstile Verification
-    const turnstileToken = formData.get('cf-turnstile-response');
     
+    // 2. Cloudflare Turnstile Verification
     if (!turnstileToken || typeof turnstileToken !== 'string') {
         return { success: false, message: "Security check missing. Please refresh and try again." };
     }
@@ -72,16 +73,15 @@ export async function sendEmail(prevState: any, formData: FormData) {
 
     const data = validatedFields.data;
 
-    // 4. Handle CV Attachment
-    const file = formData.get('cv') as File | null;
-
-    if (file && file.size > 5 * 1024 * 1024) {
-      return { success: false, message: "File too large (max 5MB)" };
-    }
-
+    const file = formData.get('cv'); 
     let attachments = [];
     
-    if (file && file.size > 0 && file.name !== 'undefined') {
+    // Use 'instanceof File' and size check for reliable file detection
+    if (file instanceof File && file.size > 0) {
+    
+      if (file.size > 5 * 1024 * 1024) {
+        return { success: false, message: "File too large (max 5MB)" };
+      }
     
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
@@ -93,7 +93,7 @@ export async function sendEmail(prevState: any, formData: FormData) {
       });
     }
 
-    // 5. HTML Email Template
+    // 4. HTML Email Template
     const emailHtml = `
       <div style="font-family: sans-serif; padding: 20px; color: #333;">
         <h2 style="color: #000;">New Submission: ${data.name}</h2>
