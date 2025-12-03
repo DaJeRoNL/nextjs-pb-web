@@ -10,7 +10,6 @@ import { useScrollReveal } from '../hooks/useScrollReveal';
 export default function AboutPage() {
   const mainContainerRef = useRef<HTMLDivElement>(null);
 
-  // OPTIMIZED SCROLL LISTENER
   useEffect(() => {
     const handleScroll = () => {
       if (mainContainerRef.current) {
@@ -154,11 +153,11 @@ export default function AboutPage() {
             </section>
 
             <section ref={missionRef} className="py-10 text-center">
-              <div className="max-w-2xl mx-auto">
-                <h2 className="text-7xl md:text-7xl text-[var(--color-footer-bg)] font-handwriting">
+              <div className="max-w-4xl mx-auto">
+                <h2 className="font-arimo font-light text-3xl md:text-5xl text-[var(--color-footer-bg)] mb-8 leading-tight">
                   Our Mission
                 </h2>
-                <p className="font-raleway font-thin italic text-gray-700 leading-relaxed text-2xl md:text-3xl px-4">
+                <p className="font-montserrat font-medium italic text-gray-700 leading-relaxed text-xl md:text-2xl px-4">
                   &quot;We aim to redefine how businesses scale their workforce by blending smart recruitment, operational excellence, and workspace optimization. What started as a simple idea connecting talent with opportunity has evolved into a complete ecosystem of people, systems, and performance.&quot;
                 </p>
               </div>
@@ -180,7 +179,7 @@ export default function AboutPage() {
                   },
                   { 
                     title: 'Innovation', 
-                    icon: <svg className="w-12 h-12 text-[var(--color-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548 5.474A1 1 0 0114.95 21H9.05a1 1 0 01-.995-.91l-.548-5.474z" /></svg>,
+                    icon: <svg className="w-12 h-12 text-[var(--color-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548 5.474A1 1 0 0114.95 21H9.05a1 1 0 01-.995-.91l-.548-5.474z" /></svg>,
                     desc: 'We use technology to remove friction, automate the boring, and elevate human potential.' 
                   }
                 ].map((v, i) => (
@@ -282,13 +281,6 @@ export default function AboutPage() {
                 </p>
 
                 <div className="relative inline-block">
-                  <Image 
-                    src="/cta-splash.png" 
-                    alt="Background Splash" 
-                    width={300} 
-                    height={300}
-                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-auto opacity-60 pointer-events-none z-0"
-                  />
                   <Link
                     href="/contact?type=client"
                     className="relative z-10 inline-block bg-[var(--color-accent)] text-white font-montserrat px-10 py-4 rounded-full shadow-lg hover:bg-[var(--color-footer-bg)] hover:scale-105 transition-all duration-300 text-lg font-bold"

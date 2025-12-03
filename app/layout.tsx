@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Montserrat, Raleway, Arimo, Homemade_Apple } from "next/font/google";
+import { Montserrat, Raleway, Arimo } from "next/font/google";
 import "./globals.css";
 import CookieConsent from "./components/CookieConsent";
-import SmoothScrolling from "./components/SmoothScrolling"; // IMPORT THIS
+import SmoothScrolling from "./components/SmoothScrolling"; 
 
 const montserrat = Montserrat({ 
   subsets: ["latin"],
@@ -17,12 +17,6 @@ const raleway = Raleway({
 const arimo = Arimo({ 
   subsets: ["latin"],
   variable: "--font-arimo",
-});
-
-const homemadeApple = Homemade_Apple({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-handwriting",
 });
 
 export const metadata: Metadata = {
@@ -61,7 +55,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${montserrat.variable} ${raleway.variable} ${arimo.variable} ${homemadeApple.variable}`}>
+      <body className={`${montserrat.variable} ${raleway.variable} ${arimo.variable}`}>
         {/* Wrap children in SmoothScrolling */}
         <SmoothScrolling>
           {children}

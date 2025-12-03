@@ -186,18 +186,18 @@ export default function CoreBytePage() {
             {/* --- LEFT PANEL --- */}
             <div className="lg:w-1/3 bg-[var(--color-footer-bg)] text-white flex flex-col relative rounded-t-3xl lg:rounded-l-3xl lg:rounded-tr-none">
               <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none rounded-t-3xl lg:rounded-l-3xl lg:rounded-tr-none" 
-                   style={{ backgroundImage: 'radial-gradient(circle at 0% 0%, var(--color-yellow-dark), transparent 40%)' }}>
+                   style={{ backgroundImage: 'radial-gradient(circle at 0% 0%, var(--color-purple), transparent 40%)' }}>
               </div>
               
               <div className="flex flex-col p-10 lg:p-14 lg:pt-28 h-full relative z-10">
                 
                 {/* TITLE BLOCK */}
                 <div className="mb-8">
-                  <p className="font-raleway font-bold text-[var(--color-yellow-dark)] uppercase tracking-[0.2em] text-sm mb-6">CoreByte</p>
+                  <p className="font-raleway font-bold text-[var(--color-purple)] uppercase tracking-[0.2em] text-sm mb-6">CoreByte</p>
                   <h1 className="font-montserrat font-bold text-4xl lg:text-5xl mb-6 leading-tight">
                     Automate.<br/>Integrate.<br/>Secure.
                   </h1>
-                  <div className="w-16 h-1 bg-[var(--color-yellow-dark)] mb-8"></div>
+                  <div className="w-16 h-1 bg-[var(--color-purple)] mb-8"></div>
                 </div>
                 
                 {/* NAVIGATION (Sticky with Fade Logic) */}
@@ -212,7 +212,7 @@ export default function CoreBytePage() {
                       className={`text-left text-sm font-montserrat font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-3
                         ${activeSection === s.name ? 'text-white translate-x-2' : 'text-gray-500 hover:text-gray-300'}`}
                     >
-                      {activeSection === s.name && <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-yellow-dark)]"></div>}
+                      {activeSection === s.name && <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-purple)]"></div>}
                       {s.name}
                     </button>
                   ))}
@@ -220,7 +220,7 @@ export default function CoreBytePage() {
 
                 {/* BOTTOM QUOTE (Observed Ref) */}
                 <div ref={quoteRef} className="hidden lg:block mt-auto pt-20">
-                   <p className="font-arimo text-xl italic text-gray-400 leading-relaxed border-l-2 border-[var(--color-yellow-dark)] pl-4">
+                   <p className="font-arimo text-xl italic text-gray-400 leading-relaxed border-l-2 border-[var(--color-purple)] pl-4">
                      &quot;The best workflow is the one you don't even notice. We automate the mundane so you can build the extraordinary.&quot;
                    </p>
                 </div>
@@ -232,9 +232,10 @@ export default function CoreBytePage() {
 
               {/* HERO */}
               <section ref={heroRef} className="flex flex-col gap-8 scroll-mt-32">
-                  <p className="font-raleway font-bold uppercase tracking-wider text-[var(--color-yellow-dark)]">INTELLIGENT WORKSPACES</p>
+                  <p className="font-raleway font-bold uppercase tracking-wider text-[var(--color-purple)]">INTELLIGENT WORKSPACES</p>
                   <h2 className="font-arimo font-light text-3xl md:text-5xl text-gray-900 leading-tight">
-                    Automate the <span style={{ color: 'var(--color-yellow-dark)', fontWeight: 700 }}>Mundane</span>
+                    {/* UPDATED: Highlight "Automate" */}
+                    <span style={{ color: 'var(--color-purple)', fontWeight: 700 }}>Automate</span> the Mundane
                   </h2>
                   <p className="font-raleway text-lg text-gray-600 leading-relaxed">
                     We build the systems that automate your busywork and secure your data. CoreByte transforms manual, error-prone processes into streamlined, intelligent workflows.
@@ -279,7 +280,7 @@ export default function CoreBytePage() {
                      }
                    ].map((val, i) => (
                       <div key={i} className="flex gap-5 items-start group">
-                        <div className="w-12 h-12 shrink-0 bg-yellow-50 rounded-full flex items-center justify-center text-[var(--color-yellow-dark)] group-hover:scale-110 transition-transform">
+                        <div className="w-12 h-12 shrink-0 bg-yellow-50 rounded-full flex items-center justify-center text-[var(--color-purple)] group-hover:scale-110 transition-transform">
                            {val.icon}
                         </div>
                         <div>
@@ -315,7 +316,7 @@ export default function CoreBytePage() {
                      }
                    ].map((item, i) => (
                       <div key={i} className="flex items-center gap-6 p-4 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100">
-                         <span className="text-3xl font-montserrat font-bold text-[var(--color-yellow-dark)] opacity-40 w-12">{item.step}</span>
+                         <span className="text-3xl font-montserrat font-bold text-[var(--color-purple)] opacity-40 w-12">{item.step}</span>
                          <div>
                             <h4 className="font-bold text-gray-900 text-lg">{item.title}</h4>
                             <p className="text-sm text-gray-600">{item.desc}</p>
@@ -331,10 +332,10 @@ export default function CoreBytePage() {
                    <span className="w-8 h-0.5 bg-[var(--color-footer-bg)]"></span> System Wins
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                   <div className="p-6 bg-gray-50 rounded-2xl border-l-4 border-[var(--color-yellow-dark)]">
+                   <div className="p-6 bg-gray-50 rounded-2xl border-l-4 border-[var(--color-purple)]">
                       <h4 className="font-bold text-lg text-[var(--color-footer-bg)] mb-2">Invoice Automation</h4>
                       <p className="text-sm text-gray-600 mb-3">Automated processing for 500+ monthly invoices.</p>
-                      <span className="text-xs font-bold text-[var(--color-yellow-dark)] uppercase tracking-wider">20 Hours Saved/Week</span>
+                      <span className="text-xs font-bold text-[var(--color-purple)] uppercase tracking-wider">20 Hours Saved/Week</span>
                    </div>
                    <div className="p-6 bg-gray-50 rounded-2xl border-l-4 border-[var(--color-footer-bg)]">
                       <h4 className="font-bold text-lg text-[var(--color-footer-bg)] mb-2">CRM Migration</h4>
@@ -357,7 +358,7 @@ export default function CoreBytePage() {
                   <div className="relative inline-block">
                     <Link 
                       href="/contact?type=client"
-                      className="relative z-10 inline-block bg-[var(--color-yellow-dark)] text-white font-montserrat px-10 py-4 rounded-full shadow-lg hover:bg-[var(--color-footer-bg)] transition-all duration-300 text-lg font-bold hover:scale-105"
+                      className="relative z-10 inline-block bg-[var(--color-purple)] text-white font-montserrat px-10 py-4 rounded-full shadow-lg hover:bg-[var(--color-footer-bg)] transition-all duration-300 text-lg font-bold hover:scale-105"
                     >
                       Optimize Systems
                     </Link>

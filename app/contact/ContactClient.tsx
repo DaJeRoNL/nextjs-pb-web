@@ -298,7 +298,17 @@ const ContactClient = () => {
                             )}
                           </div>
 
-                          <button type="submit" disabled={!isFormValid || isSubmitting} className={`px-8 py-3 rounded-md font-bold font-montserrat text-sm uppercase tracking-wide transition-all duration-300 flex items-center shadow-md ${!isFormValid || isSubmitting ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-[var(--color-accent)] text-white hover:bg-orange-700 hover:shadow-lg translate-y-0'}`}>{isSubmitting ? 'Processing...' : <>Start Discovery <Icons.ArrowRight /></>}</button>
+                          <button 
+                            type="submit" 
+                            disabled={!isFormValid || isSubmitting} 
+                            className={`px-8 py-3 rounded-md font-bold font-montserrat text-sm uppercase tracking-wide transition-all duration-300 flex items-center shadow-md 
+                              ${!isFormValid || isSubmitting 
+                                ? 'bg-white border border-gray-200 text-gray-400 cursor-not-allowed shadow-none' // UPDATED STYLE
+                                : 'bg-[var(--color-accent)] text-white hover:bg-orange-700 hover:shadow-lg translate-y-0'}`
+                            }
+                          >
+                            {isSubmitting ? 'Processing...' : <>Start Discovery <Icons.ArrowRight /></>}
+                          </button>
                           <p className="text-sm text-gray-400 text-left italic mt-4 pl-1 border-l-2 border-gray-200">Note: Submitting this form unlocks the option to book a meeting directly with our team.</p>
                         </form>
                       )}

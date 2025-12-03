@@ -31,7 +31,6 @@ const ScrollDownArrow = () => {
       }
     };
 
-    // 5 second delay before showing
     timer = setTimeout(() => {
       if (window.scrollY < 20) setVisible(true);
     }, 5000);
@@ -46,7 +45,7 @@ const ScrollDownArrow = () => {
   return (
     <div 
       className={`absolute left-1/2 transform -translate-x-1/2 transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
-      style={{ bottom: '8rem' }} // Higher up
+      style={{ bottom: '8rem' }}
     >
       <div className="animate-bounce-arrow text-gray-400">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-8 h-8">
@@ -120,7 +119,7 @@ const HeroSection = () => {
     const colors = [
       'var(--color-accent)',       // Orange
       'var(--color-lime-dark)',    // Green
-      'var(--color-yellow-dark)'   // Yellow
+      'var(--color-purple)'   // Yellow (or Purple if you updated it elsewhere, but keeping colors consistent with current file)
     ];
     const nextColors = colors.filter(c => c !== byteColor);
     const randomColor = nextColors[Math.floor(Math.random() * nextColors.length)];
@@ -159,7 +158,7 @@ const ServicesSection = () => {
   const services = [
     { title: "PlaceByte", description: "Specialist recruitment in Tech, Healthcare, Startups, and Travel. We find the right fit for challenging roles.", color: 'var(--color-accent)', image: "/PBh.jpg", link: '/placebyte', mirrored: false },
     { title: "OpsByte", description: "Plug-and-play, vetted teams that scale your operations instantly. Removing the chaos of traditional hiring.", color: 'var(--color-lime-dark)', image: "/OBh.jpg", link: '/opsbyte', mirrored: true },
-    { title: "CoreByte", description: "System development and workflow automation. We build the intelligent workspace that quietly removes the manual work.", color: 'var(--color-yellow-dark)', image: "/CBh.jpg", link: '/corebyte', mirrored: false }
+    { title: "CoreByte", description: "System development and workflow automation. We build the intelligent workspace that quietly removes the manual work.", color: 'var(--color-purple)', image: "/CBh.jpg", link: '/corebyte', mirrored: false }
   ];
 
   return (
@@ -205,9 +204,10 @@ const CTABeforeFooter = () => {
   return (
     <section className="pt-16 pb-32 relative z-10"> 
       <div className="container mx-auto px-6 max-w-4xl text-center">
-        <div ref={ctaRef} className="content-island p-8 md:p-12 scroll-reveal relative">
-          <p className="font-raleway font-bold uppercase tracking-wider mb-4" style={{color: 'var(--color-accent)'}}>Convinced?</p>
-          <h2 className="font-montserrat font-bold text-4xl mb-8" style={{ color: 'var(--color-footer-bg)' }}>Let&apos;s Connect!</h2>
+        {/* UPDATED: Removed 'content-island' class (white box) and updated text */}
+        <div ref={ctaRef} className="relative scroll-reveal">
+          <p className="font-raleway font-bold uppercase tracking-wider mb-4" style={{color: 'var(--color-accent)'}}>Ready to grow?</p>
+          <h2 className="font-montserrat font-bold text-5xl mb-12" style={{ color: 'var(--color-footer-bg)' }}>Start your transformation.</h2>
           <HeroButtons />
         </div>
       </div>
@@ -259,7 +259,6 @@ export default function App() {
 
   useScrollToTop();
 
-  // OPTIMIZED SCROLL LISTENER: Updates DOM directly, avoids React re-renders
   useEffect(() => {
     const handleScroll = () => {
       if (mainContainerRef.current) {
@@ -275,7 +274,7 @@ export default function App() {
       <div 
         ref={mainContainerRef}
         className="min-h-screen relative" 
-        style={{ '--scroll': '0px' } as React.CSSProperties} // Default value
+        style={{ '--scroll': '0px' } as React.CSSProperties}
       >
         
         <div className="fixed-background">
@@ -292,18 +291,67 @@ export default function App() {
           <ServicesSection />
 
           <section id='about' ref={aboutRef} className='py-16 relative overflow-hidden scroll-reveal z-10'>
-            <div className='container mx-auto px-6 max-w-7xl text-center'>
-              <div className='content-island relative'>
-                <p className='font-raleway font-bold uppercase tracking-wider mb-4' style={{color:'var(--color-accent)'}}>Why PlaceByte?</p>
-                <h2 className='font-montserrat font-bold text-4xl mb-6' style={{ color: 'var(--color-footer-bg)' }}>Engineered for Growth</h2>
-                <hr className='header-separator'/>
-                <div className='font-raleway text-lg text-gray-700 space-y-6'>
-                  <p className='leading-relaxed'>
-                    We built PlaceByte on a simple idea. Great teams are engineered, supported, and powered. So we created three layers that work together or solo, depending on what you need. Recruitment brings you the talent. OpsByte plugs in the team that keeps your workflows moving without the cost and chaos of traditional hiring. CoreByte powers the workspace behind it all with automation that quietly removes the manual work nobody wants to do.
-                  </p>
-                  <p className='leading-relaxed font-semibold text-gray-900'>
-                    Our mission is to give businesses a smarter way to grow through flexible talent, clean processes, and an intelligent workspace that keeps everything synced, documented, and running on time. The right people keep daily operations sharp. The right systems keep your workflows aligned through automation, diagnostics, and real-time data accuracy. Together, they help teams move faster, work cleaner, and operate with far less stress.
-                  </p>
+            <div className='container mx-auto px-6 max-w-7xl'>
+              <div className='content-island relative p-10 md:p-16'>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    
+                    {/* Left Column: Copy */}
+                    <div>
+                        <p className='font-raleway font-bold uppercase tracking-wider mb-4' style={{color:'var(--color-accent)'}}>Why PlaceByte?</p>
+                        <h2 className='font-montserrat font-bold text-4xl mb-6' style={{ color: 'var(--color-footer-bg)' }}>Engineered for Growth</h2>
+                        <hr className='header-separator mx-0 mb-8'/>
+                        <div className='font-raleway text-lg text-gray-700 space-y-6'>
+                            <p className='leading-relaxed'>
+                              We built PlaceByte on a simple idea. Great teams are engineered, supported, and powered. So we created three layers that work together or solo, depending on what you need. Recruitment brings you the talent. OpsByte plugs in the team that keeps your workflows moving without the cost and chaos of traditional hiring. CoreByte powers the workspace behind it all with automation.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Right Column: Benefits with SVGs (UPDATED: min-h-90px for alignment) */}
+                    <div className="space-y-8 bg-gray-50/50 p-8 rounded-2xl border border-gray-100">
+                        
+                        {/* Talent */}
+                        <div className="flex gap-5 items-start min-h-[90px]">
+                            <div className="w-12 h-12 shrink-0 flex items-center justify-center bg-white rounded-full shadow-sm text-[var(--color-accent)]">
+                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 className="font-montserrat font-bold text-lg text-[var(--color-footer-bg)]">Talent</h4>
+                                <p className="font-raleway text-gray-600 text-sm mt-1 leading-relaxed">PlaceByte finds the cultural fits that generic recruiters miss.</p>
+                            </div>
+                        </div>
+
+                        {/* Speed */}
+                        <div className="flex gap-5 items-start min-h-[90px]">
+                            <div className="w-12 h-12 shrink-0 flex items-center justify-center bg-white rounded-full shadow-sm text-[var(--color-lime-dark)]">
+                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 className="font-montserrat font-bold text-lg text-[var(--color-footer-bg)]">Speed</h4>
+                                <p className="font-raleway text-gray-600 text-sm mt-1 leading-relaxed">OpsByte plugs in vetted teams instantly. No 3-month hiring cycles.</p>
+                            </div>
+                        </div>
+
+                        {/* System */}
+                        <div className="flex gap-5 items-start min-h-[90px]">
+                            <div className="w-12 h-12 shrink-0 flex items-center justify-center bg-white rounded-full shadow-sm text-[var(--color-purple)]">
+                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 className="font-montserrat font-bold text-lg text-[var(--color-footer-bg)]">System</h4>
+                                <p className="font-raleway text-gray-600 text-sm mt-1 leading-relaxed">CoreByte automates the manual work so your people can focus on strategy.</p>
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
               </div>
             </div>

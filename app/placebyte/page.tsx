@@ -233,7 +233,8 @@ export default function PlaceBytePage() {
               <section ref={heroRef} className="flex flex-col gap-8 scroll-mt-32">
                   <p className="font-raleway font-bold uppercase tracking-wider text-[var(--color-accent)]">RECRUITMENT REFINED</p>
                   <h2 className="font-arimo font-light text-3xl md:text-5xl text-gray-900 leading-tight">
-                    Talent That Elevates <span style={{ color: 'var(--color-accent)', fontWeight: 700 }}>Your Team</span>
+                    {/* UPDATED: Highlight "Elevates" */}
+                    Talent That <span style={{ color: 'var(--color-accent)', fontWeight: 700 }}>Elevates</span> Your Team
                   </h2>
                   <p className="font-raleway text-lg text-gray-600 leading-relaxed">
                     PlaceByte delivers focused and effective recruitment solutions. We identify candidates who can perform, adapt, and strengthen your long-term growth.
