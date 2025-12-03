@@ -167,7 +167,7 @@ export default function CoreBytePage() {
           style={{
             width: '70vw',
             height: '70vw',
-            background: 'radial-gradient(circle, rgba(202,138,4,0.3) 0%, rgba(255,255,255,0) 70%)',
+            background: 'radial-gradient(circle, rgba(99,102,241,0.3) 0%, rgba(255,255,255,0) 70%)',
             bottom: '-20%',
             left: '-20%',
           }}
