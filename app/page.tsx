@@ -119,7 +119,7 @@ const HeroSection = () => {
     const colors = [
       'var(--color-accent)',       // Orange
       'var(--color-lime-dark)',    // Green
-      'var(--color-purple)'   // Yellow (or Purple if you updated it elsewhere, but keeping colors consistent with current file)
+      'var(--color-purple)'   // Yellow/Purple
     ];
     const nextColors = colors.filter(c => c !== byteColor);
     const randomColor = nextColors[Math.floor(Math.random() * nextColors.length)];
@@ -204,7 +204,6 @@ const CTABeforeFooter = () => {
   return (
     <section className="pt-16 pb-32 relative z-10"> 
       <div className="container mx-auto px-6 max-w-4xl text-center">
-        {/* UPDATED: Removed 'content-island' class (white box) and updated text */}
         <div ref={ctaRef} className="relative scroll-reveal">
           <p className="font-raleway font-bold uppercase tracking-wider mb-4" style={{color: 'var(--color-accent)'}}>Ready to grow?</p>
           <h2 className="font-montserrat font-bold text-5xl mb-12" style={{ color: 'var(--color-footer-bg)' }}>Start your transformation.</h2>
@@ -259,14 +258,28 @@ export default function App() {
 
   useScrollToTop();
 
+  // --- OPTIMIZED PARALLAX LOGIC (requestAnimationFrame) ---
   useEffect(() => {
+    let requestRunning: number | null = null;
+
     const handleScroll = () => {
-      if (mainContainerRef.current) {
-        mainContainerRef.current.style.setProperty('--scroll', `${window.scrollY}px`);
+      // If a frame is already scheduled, don't schedule another one
+      if (requestRunning === null) {
+        requestRunning = window.requestAnimationFrame(() => {
+          if (mainContainerRef.current) {
+            mainContainerRef.current.style.setProperty('--scroll', `${window.scrollY}px`);
+          }
+          requestRunning = null; // Reset lock
+        });
       }
     };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (requestRunning) window.cancelAnimationFrame(requestRunning);
+    };
   }, []);
 
   return (
@@ -277,10 +290,17 @@ export default function App() {
         style={{ '--scroll': '0px' } as React.CSSProperties}
       >
         
+        {/* BACKGROUND - UPDATED FOR GPU PERFORMANCE */}
         <div className="fixed-background">
-          <div className="glass-blob-1"></div>
-          <div className="glass-blob-2"></div>
-          <div className="glass-blob-3"></div>
+          <div className="blob-intro-1 absolute inset-0 pointer-events-none">
+             <div className="glass-blob-1"></div>
+          </div>
+          <div className="blob-intro-2 absolute inset-0 pointer-events-none">
+             <div className="glass-blob-2"></div>
+          </div>
+          <div className="blob-intro-3 absolute inset-0 pointer-events-none">
+             <div className="glass-blob-3"></div>
+          </div>
           <div className="glass-overlay"></div>
         </div>
 
@@ -307,7 +327,7 @@ export default function App() {
                         </div>
                     </div>
 
-                    {/* Right Column: Benefits with SVGs (UPDATED: min-h-90px for alignment) */}
+                    {/* Right Column: Benefits with SVGs */}
                     <div className="space-y-8 bg-gray-50/50 p-8 rounded-2xl border border-gray-100">
                         
                         {/* Talent */}

@@ -31,7 +31,10 @@ export default function Header() {
           <Link href='/' className='flex items-center select-none'>
             <img 
               src={headerLogoUrl} 
-              alt='PlaceByte Logo' 
+              alt='PlaceByte Logo'
+              // FIX: Explicit dimensions to prevent Layout Shift (CLS)
+              width={220}
+              height={55}
               className='block w-auto h-[45px] md:h-[55px] object-contain' 
               style={{ display: 'block' }} 
             />
@@ -60,7 +63,15 @@ export default function Header() {
         <div className="header-base header-small hidden md:block">
           <div className="w-full h-full relative px-4 md:px-10">
             <Link href="/" className="absolute" style={{ top: '100%', left: '1.5rem', marginTop: '0.85rem' }}>
-              <img src={faviconLogoUrl} alt="PlaceByte Favicon" className="transition-all duration-300 ease-in-out hover:scale-110" style={{ height: '60px' }} />
+              <img 
+                src={faviconLogoUrl} 
+                alt="PlaceByte Favicon" 
+                // FIX: Explicit dimensions to prevent Layout Shift (CLS)
+                width={60}
+                height={60}
+                className="transition-all duration-300 ease-in-out hover:scale-110" 
+                style={{ height: '60px', width: 'auto' }} 
+              />
             </Link>
             <div className="absolute bg-white rounded-full shadow-lg px-4 py-2" style={{ top: '100%', right: '1.5rem', marginTop: '0.85rem' }}>
               <div className="space-x-6 text-md font-raleway">
@@ -78,7 +89,13 @@ export default function Header() {
       >
         <div className="p-8 flex flex-col h-full">
             <div className="flex justify-between items-center mb-10">
-               <img src={headerLogoUrl} alt="PlaceByte" className="h-[40px] w-auto" />
+               <img 
+                 src={headerLogoUrl} 
+                 alt="PlaceByte" 
+                 width={160} 
+                 height={40} 
+                 className="h-[40px] w-auto" 
+               />
                <button onClick={() => setIsMobileMenuOpen(false)} className="text-4xl text-gray-800 focus:outline-none">&times;</button>
             </div>
             

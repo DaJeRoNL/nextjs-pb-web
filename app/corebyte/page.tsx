@@ -58,11 +58,15 @@ export default function CoreBytePage() {
   const storiesRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   
-  // New Refs for overlap detection
+  // Overlap Detection Ref
   const quoteRef = useRef<HTMLDivElement>(null);
 
   const [activeSection, setActiveSection] = useState('Overview');
   const [isNavVisible, setIsNavVisible] = useState(true);
+
+  // --- CONFIG ---
+  // The "Line" on the screen where sections snap to (Header height + padding)
+  const SCROLL_OFFSET = 140; 
 
   const sections = [
     { ref: heroRef, name: 'Overview' },
@@ -72,47 +76,58 @@ export default function CoreBytePage() {
     { ref: ctaRef, name: 'Automate' },
   ];
 
-  // --- SCROLL SPY LOGIC ---
+  // --- ZONE-BASED SCROLL SPY ---
   useEffect(() => {
-    const observerOptions = {
-      root: null,
-      // Keep active band near the top 20-30% of screen
-      rootMargin: '-20% 0px -70% 0px', 
-      threshold: 0.1
-    };
+    const handleScroll = () => {
+      const currentScroll = window.scrollY;
+      
+      // 1. Bottom Anchor: If we hit the bottom, force the last section.
+      if ((window.innerHeight + currentScroll) >= document.body.offsetHeight - 20) {
+        setActiveSection(sections[sections.length - 1].name);
+        return;
+      }
 
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const matchedSection = sections.find(s => s.ref.current === entry.target);
-          if (matchedSection) {
-            setActiveSection(matchedSection.name);
+      // 2. Zone Calculation
+      // Iterate backwards. The first section whose "Trigger Point" we have passed is the winner.
+      let newActive = sections[0].name;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = sections[i];
+        if (section.ref.current) {
+          const elementTop = section.ref.current.getBoundingClientRect().top + window.scrollY;
+          const triggerPoint = elementTop - SCROLL_OFFSET - 20; // 20px tolerance
+
+          if (currentScroll >= triggerPoint) {
+            newActive = section.name;
+            break; 
           }
         }
-      });
-    };
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-    sections.forEach(section => {
-      if (section.ref.current) observer.observe(section.ref.current);
-    });
-
-    // Bottom check
-    const handleBottomScroll = () => {
-      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50) {
-        setActiveSection('Automate');
       }
-    };
-    window.addEventListener('scroll', handleBottomScroll);
 
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('scroll', handleBottomScroll);
+      setActiveSection(newActive);
     };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initial check
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [sections]);
 
-  // --- OVERLAP DETECTION LOGIC ---
+  // --- CLICK SCROLLING ---
+  const handleNavClick = (sectionName: string, ref: React.RefObject<HTMLDivElement>) => {
+    setActiveSection(sectionName); // Instant UI update
+    
+    if (ref.current) {
+      const elementTop = ref.current.getBoundingClientRect().top + window.scrollY;
+      const targetPosition = elementTop - SCROLL_OFFSET;
+
+      window.scrollTo({
+        top: targetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // --- OVERLAP DETECTION ---
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -130,12 +145,6 @@ export default function CoreBytePage() {
 
     return () => observer.disconnect();
   }, []);
-
-  const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
-    if (ref.current) {
-      ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -208,7 +217,7 @@ export default function CoreBytePage() {
                   {sections.map((s) => (
                     <button
                       key={s.name}
-                      onClick={() => scrollToSection(s.ref)}
+                      onClick={() => handleNavClick(s.name, s.ref)}
                       className={`text-left text-sm font-montserrat font-bold uppercase tracking-wider transition-all duration-300 flex items-center gap-3
                         ${activeSection === s.name ? 'text-white translate-x-2' : 'text-gray-500 hover:text-gray-300'}`}
                     >

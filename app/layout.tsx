@@ -26,9 +26,22 @@ export const metadata: Metadata = {
   },
   description: "Recruitment, Operations, and Systems Automation for modern teams.",
   icons: {
-    icon: '/favicon.png',
-    shortcut: '/favicon.png',
-    apple: '/favicon.png',
+    icon: [
+      // Standard browser tab icon
+      { url: '/PBFweb16.png', sizes: '16x16', type: 'image/png' },
+      // High-DPI/Windows taskbar icon
+      { url: '/PBFweb32.png', sizes: '32x32', type: 'image/png' },
+      // Windows site/high-res desktop icon
+      { url: '/PBFweb48.png', sizes: '48x48', type: 'image/png' },
+      // Android/PWA icon (used for Chrome/Android launchers)
+      { url: '/PBFweb192.png', sizes: '192x192', type: 'image/png' }, 
+    ],
+    // Fallback shortcut icon
+    shortcut: '/PBFweb16.png',
+    // Apple Touch Icon for iOS home screens
+    apple: [
+        { url: '/PBFweb180.png', sizes: '180x180', type: 'image/png' }
+    ],
   },
   openGraph: {
     title: 'PlaceByte',

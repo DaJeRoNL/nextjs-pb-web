@@ -148,27 +148,38 @@ hr.header-separator {
   opacity: 1; 
 }
 
-/* --- INTRO ANIMATIONS --- */
-@keyframes move-in-blob-1 {
-  from { left: -40%; top: -30%; } 
-  to { left: -15%; top: -20%; }   
+/* --- OPTIMIZED INTRO ANIMATIONS (Uses Transform) --- */
+/* These animations now move the wrapper from an offset to 0,0 
+   allowing the GPU to handle the movement efficiently. */
+@keyframes intro-blob-1 {
+  from { transform: translate3d(-25vw, -10vh, 0); } 
+  to { transform: translate3d(0, 0, 0); }   
 }
-@keyframes move-in-blob-2 {
-  from { right: -40%; bottom: -30%; } 
-  to { right: -15%; bottom: -20%; }   
+@keyframes intro-blob-2 {
+  from { transform: translate3d(25vw, 10vh, 0); } 
+  to { transform: translate3d(0, 0, 0); }   
 }
-@keyframes move-in-blob-3 {
-  from { left: 60%; top: 60%; }
-  to { left: 30%; top: 40%; }
+@keyframes intro-blob-3 {
+  from { transform: translate3d(30vw, 20vh, 0); }
+  to { transform: translate3d(0, 0, 0); }
 }
 
+/* Wrapper classes to handle Entrance Animation */
+.blob-intro-1 { animation: intro-blob-1 2s ease-out 0.5s both; }
+.blob-intro-2 { animation: intro-blob-2 2s ease-out 0.5s both; }
+.blob-intro-3 { animation: intro-blob-3 2s ease-out 0.5s both; }
+
 /* --- PARALLAX + DIMMING + WIDENING --- */
-/* DESKTOP DEFAULTS */
+/* Blobs now have static base positions. Scroll transform adds to this. */
+
+/* Blob 1: Top Left */
 .glass-blob-1 {
   position: absolute;
   width: 80vw; height: 80vw;
   background: radial-gradient(circle, rgba(37,99,235,0.4) 0%, rgba(255,255,255,0) 70%);
-  animation: move-in-blob-1 2s ease-out 0.5s both; 
+  /* Static Final Position */
+  left: -15%; top: -20%;
+  /* Parallax Logic */
   transform: translate(
     calc(min(var(--scroll), 800px) * -0.3), 
     calc(min(var(--scroll), 800px) * 0.2)   
@@ -176,11 +187,14 @@ hr.header-separator {
   opacity: calc(1 - (min(var(--scroll), 800px) / 1000)); 
 }
 
+/* Blob 2: Bottom Right */
 .glass-blob-2 {
   position: absolute;
   width: 70vw; height: 70vw;
   background: radial-gradient(circle, rgba(249,115,22,0.3) 0%, rgba(255,255,255,0) 70%);
-  animation: move-in-blob-2 2s ease-out 0.5s both;
+  /* Static Final Position */
+  right: -15%; bottom: -20%;
+  /* Parallax Logic */
   transform: translate(
     calc(min(var(--scroll), 800px) * 0.3),  
     calc(min(var(--scroll), 800px) * -0.2)  
@@ -188,11 +202,14 @@ hr.header-separator {
   opacity: calc(1 - (min(var(--scroll), 800px) / 1000));
 }
 
+/* Blob 3: Center/Bottom Left */
 .glass-blob-3 {
   position: absolute;
   width: 50vw; height: 50vw;
   background: radial-gradient(circle, rgba(37,99,235,0.2) 0%, rgba(255,255,255,0) 70%);
-  animation: move-in-blob-3 2s ease-out 0.5s both;
+  /* Static Final Position */
+  left: 30%; top: 40%;
+  /* Parallax Logic */
   transform: translate(
     calc(min(var(--scroll), 800px) * -0.1), 
     calc(min(var(--scroll), 800px) * 0.1)
@@ -229,13 +246,19 @@ hr.header-separator {
 }
 
 /* --- MOBILE OVERRIDES --- */
+/* Optimized animations for mobile too */
 @media (max-width: 768px) {
   .glass-blob-1 { width: 120vw; height: 120vw; transform: translate(calc(min(var(--scroll), 800px) * -0.1), calc(min(var(--scroll), 800px) * 0.1)); }
   .glass-blob-2 { width: 120vw; height: 120vw; transform: translate(calc(min(var(--scroll), 800px) * 0.1), calc(min(var(--scroll), 800px) * -0.1)); }
   .glass-blob-3 { width: 100vw; height: 100vw; transform: translate(calc(min(var(--scroll), 800px) * -0.05), calc(min(var(--scroll), 800px) * 0.05)); }
   
-  @keyframes move-in-blob-1 { from { left: -60%; top: -20%; } to { left: -30%; top: 10%; } }
-  @keyframes move-in-blob-2 { from { right: -60%; bottom: -20%; } to { right: -30%; bottom: 10%; } }
+  /* Adjusted mobile intro animations */
+  @keyframes intro-blob-1 { from { transform: translate3d(-30vw, -10vh, 0); } to { transform: translate3d(0, 0, 0); } }
+  @keyframes intro-blob-2 { from { transform: translate3d(30vw, 10vh, 0); } to { transform: translate3d(0, 0, 0); } }
+
+  /* Mobile positioning overrides */
+  .glass-blob-1 { left: -30%; top: 10%; }
+  .glass-blob-2 { right: -30%; bottom: 10%; }
 
   .glass-blob-static-1 { width: 120vw; height: 120vw; left: -30%; top: 10%; opacity: 0.4; }
   .glass-blob-static-2 { width: 120vw; height: 120vw; right: -30%; bottom: 10%; opacity: 0.4; }
