@@ -140,7 +140,7 @@ export default function AboutPage() {
 
           <div className="flex-1 flex flex-col gap-20">
 
-            <section ref={heroRef} className="content-island p-10 md:p-16 flex flex-col md:flex-row items-center gap-12 bg-white">
+            <section ref={heroRef} className="content-island p-10 md:p-16 flex flex-col md:flex-row items-center gap-12 bg-white opacity-0">
               <div className="flex-1 text-left">
                 <p className="font-raleway font-bold uppercase tracking-wider mb-4 text-[var(--color-accent)]">About PlaceByte</p>
                 <h1 className="font-arimo font-light text-3xl md:text-5xl text-[var(--color-footer-bg)] mb-8 leading-tight">
@@ -162,12 +162,12 @@ export default function AboutPage() {
               </div>
               <div className="w-full md:w-1/3 hidden md:flex justify-center">
                 <div className="relative w-64 h-64 rounded-full bg-gradient-to-tr from-[var(--color-accent)]/5 to-[var(--color-primary)]/5 flex items-center justify-center border border-[var(--color-footer-bg)]/5 shadow-inner">
-                   <span className="font-arimo text-8xl font-bold text-[var(--color-footer-bg)]/5 select-none">PB</span>
+                    <span className="font-arimo text-8xl font-bold text-[var(--color-footer-bg)]/5 select-none">PB</span>
                 </div>
               </div>
             </section>
 
-            <section ref={missionRef} className="py-10 text-center">
+            <section ref={missionRef} className="py-10 text-center opacity-0">
               <div className="max-w-4xl mx-auto">
                 <h2 className="font-arimo font-light text-3xl md:text-5xl text-[var(--color-footer-bg)] mb-8 leading-tight">
                   Our Mission
@@ -178,7 +178,7 @@ export default function AboutPage() {
               </div>
             </section>
 
-            <section ref={valuesRef}>
+            <section ref={valuesRef} className="opacity-0">
               <h2 className="font-montserrat font-bold text-3xl text-[var(--color-footer-bg)] mb-10 text-left px-4 border-l-8 border-[var(--color-accent)] pl-6">
                 Core Values
               </h2>
@@ -272,7 +272,7 @@ export default function AboutPage() {
               </div>
             </section>
 
-            <section ref={storiesRef}>
+            <section ref={storiesRef} className="opacity-0">
               <h2 className="font-montserrat font-bold text-3xl text-[var(--color-footer-bg)] mb-10 text-left px-4 border-l-8 border-[var(--color-accent)] pl-6">Success Stories</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                  {[
@@ -281,20 +281,20 @@ export default function AboutPage() {
                    { title: 'Strategic Recruitment', desc: 'Placed key operational managers for a growing logistics company.', result: '3 Hires in 5 Weeks', color: 'text-[var(--color-lime-dark)]' }
                  ].map((card, i) => (
                    <div key={i} className="group content-island p-0 overflow-hidden hover:shadow-2xl transition-all duration-300">
-                      <div className="bg-gray-50 h-32 flex items-center justify-center text-gray-300 group-hover:bg-gray-100 transition-colors">
-                        <div className={`${card.color} opacity-50 group-hover:opacity-100 transition-all text-4xl font-bold`}>★</div>
-                      </div>
-                      <div className="p-8">
-                          <h3 className="font-montserrat font-bold text-lg mb-2 text-[var(--color-footer-bg)]">{card.title}</h3>
-                          <p className="font-raleway text-sm text-gray-600 mb-4 leading-relaxed">{card.desc}</p>
-                          <p className={`font-montserrat font-bold text-sm ${card.color}`}>{card.result}</p>
-                      </div>
+                     <div className="bg-gray-50 h-32 flex items-center justify-center text-gray-300 group-hover:bg-gray-100 transition-colors">
+                       <div className={`${card.color} opacity-50 group-hover:opacity-100 transition-all text-4xl font-bold`}>★</div>
+                     </div>
+                     <div className="p-8">
+                         <h3 className="font-montserrat font-bold text-lg mb-2 text-[var(--color-footer-bg)]">{card.title}</h3>
+                         <p className="font-raleway text-sm text-gray-600 mb-4 leading-relaxed">{card.desc}</p>
+                         <p className={`font-montserrat font-bold text-sm ${card.color}`}>{card.result}</p>
+                     </div>
                    </div>
                  ))}
               </div>
             </section>
 
-            <section ref={timelineRef} className="relative">
+            <section ref={timelineRef} className="relative opacity-0">
                <div className="flex flex-col md:flex-row justify-between items-end mb-16 px-4 border-l-8 border-[var(--color-accent)] pl-6">
                   <h2 className="font-montserrat font-bold text-3xl text-[var(--color-footer-bg)]">Our Journey</h2>
                   <p className="text-gray-400 font-raleway text-sm uppercase tracking-widest hidden md:block">Est. 2022</p>
@@ -349,7 +349,7 @@ export default function AboutPage() {
                </div>
            </section>
            
-           <section ref={ctaRef} className="content-island py-20 text-center bg-white relative overflow-hidden">
+           <section ref={ctaRef} className="content-island py-20 text-center bg-white relative overflow-hidden opacity-0">
               <div className="relative z-10">
                 <h2 className="font-montserrat font-bold text-4xl text-[var(--color-footer-bg)] mb-6">
                   Ready to Build the Future of Work?
