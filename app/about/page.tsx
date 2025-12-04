@@ -30,33 +30,48 @@ export default function AboutPage() {
   const [activeSection, setActiveSection] = useState('Overview');
 
   const sections = [
-    { ref: heroRef, name: 'Overview' },
-    { ref: missionRef, name: 'Mission' },
-    { ref: valuesRef, name: 'Values' },
-    { ref: storiesRef, name: 'Success Stories' },
-    { ref: timelineRef, name: 'Journey' },
-    { ref: ctaRef, name: 'Contact' },
+    { ref: heroRef, id: 'Overview' },
+    { ref: missionRef, id: 'Mission' },
+    { ref: valuesRef, id: 'Values' },
+    { ref: storiesRef, id: 'Success Stories' },
+    { ref: timelineRef, id: 'Journey' },
+    { ref: ctaRef, id: 'Contact' },
   ];
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollPos = window.scrollY + window.innerHeight / 3;
-      
-      for (const section of sections) {
-        if (section.ref.current) {
-          const offsetTop = section.ref.current.offsetTop;
-          const offsetHeight = section.ref.current.offsetHeight;
-          if (scrollPos >= offsetTop && scrollPos < offsetTop + offsetHeight) {
-            setActiveSection(section.name);
-            break; 
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // @ts-ignore
+            setActiveSection(entry.target.dataset.sectionId || 'Overview');
           }
-        }
+        });
+      },
+      { root: null, rootMargin: '-40% 0px -55% 0px', threshold: 0 }
+    );
+
+    sections.forEach((section) => {
+      if (section.ref.current) {
+        section.ref.current.dataset.sectionId = section.id;
+        observer.observe(section.ref.current);
+      }
+    });
+
+    const handleBottomCheck = () => {
+      const isBottom = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50;
+      if (isBottom) {
+        setActiveSection(sections[sections.length - 1].id);
       }
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [sections]);
+    window.addEventListener('scroll', handleBottomCheck, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', handleBottomCheck);
+    };
+  }, []);
 
   const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
     ref.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -110,15 +125,15 @@ export default function AboutPage() {
             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 pl-4">On This Page</p>
             {sections.map((s) => (
               <button
-                key={s.name}
+                key={s.id}
                 className={`px-4 py-3 rounded-lg text-sm font-bold transition-all duration-300 text-left flex items-center justify-between group
-                  ${activeSection === s.name
+                  ${activeSection === s.id
                     ? 'bg-[var(--color-footer-bg)] text-white shadow-md translate-x-2' 
                     : 'text-gray-500 hover:bg-white/50 hover:text-[var(--color-accent)]'}`}
                 onClick={() => scrollToSection(s.ref)}
               >
-                {s.name}
-                {activeSection === s.name && <span className="w-2 h-2 bg-[var(--color-accent)] rounded-full"></span>}
+                {s.id}
+                {activeSection === s.id && <span className="w-2 h-2 bg-[var(--color-accent)] rounded-full"></span>}
               </button>
             ))}
           </nav>
@@ -164,28 +179,93 @@ export default function AboutPage() {
             </section>
 
             <section ref={valuesRef}>
-              <h2 className="font-montserrat font-bold text-3xl text-[var(--color-footer-bg)] mb-10 text-left px-4 border-l-8 border-[var(--color-accent)] pl-6">Core Values</h2>
+              <h2 className="font-montserrat font-bold text-3xl text-[var(--color-footer-bg)] mb-10 text-left px-4 border-l-8 border-[var(--color-accent)] pl-6">
+                Core Values
+              </h2>
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[ 
-                  { 
-                    title: 'Precision', 
-                    icon: <svg className="w-12 h-12 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 2a10 10 0 100 20 10 10 0 000-20z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8a4 4 0 100 8 4 4 0 000-8z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10a2 2 0 100 4 2 2 0 000-4z" /></svg>,
-                    desc: 'We don\'t just fill roles, we engineer fits. Every placement is data-backed and culturally aligned.' 
+                {[
+                  {
+                    title: 'Precision',
+                    color: 'text-red-600',
+                    dash: 260,
+                    paths: [
+                      { d: "M12 2a10 10 0 100 20 10 10 0 000-20z", delay: 0 },
+                      { d: "M12 8a4 4 0 100 8 4 4 0 000-8z", delay: 100 },
+                      { d: "M12 10a2 2 0 100 4 2 2 0 000-4z", delay: 200 }
+                    ],
+                    desc: "We don't just fill roles, we engineer fits. Every placement is data-backed and culturally aligned."
                   },
-                  { 
-                    title: 'Agility', 
-                    icon: <svg className="w-12 h-12 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>,
-                    desc: 'The world moves fast. We move faster. OpsByte teams deploy in days, not months.' 
+                  {
+                    title: 'Agility',
+                    color: 'text-yellow-500',
+                    dash: 180,
+                    paths: [
+                      { d: "M13 10V3L4 14h7v7l9-11h-7z", delay: 0 }
+                    ],
+                    desc: 'The world moves fast. We move faster. OpsByte teams deploy in days, not months.',
+                    thunder: true
                   },
-                  { 
-                    title: 'Innovation', 
-                    icon: <svg className="w-12 h-12 text-[var(--color-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548 5.474A1 1 0 0114.95 21H9.05a1 1 0 01-.995-.91l-.548-5.474z" /></svg>,
-                    desc: 'We use technology to remove friction, automate the boring, and elevate human potential.' 
+                  {
+                    title: 'Innovation',
+                    color: 'text-[var(--color-primary)]',
+                    dash: 240,
+                    paths: [
+                      { d: "M9.663 17h4.673", delay: 200 },
+                      { d: "M8.464 15.536a5 5 0 117.072 0l-.548 5.474A1 1 0 0114.95 21H9.05a1 1 0 01-.995-.91l-.548-5.474z", delay: 100 },
+                      { d: "M12 3v1", delay: 300 },
+                      { d: "M18.364 4.636l-.707.707", delay: 350 },
+                      { d: "M21 12h-1", delay: 400 },
+                      { d: "M4 12H3", delay: 450 },
+                      { d: "M6.343 6.343l-.707-.707", delay: 500 }
+                    ],
+                    desc: 'We use technology to remove friction, automate the boring, and elevate human potential.'
                   }
                 ].map((v, i) => (
-                  <div key={i} className="group content-island p-8 hover:-translate-y-2 transition-all duration-300 border-l-4 border-transparent hover:border-[var(--color-accent)] hover:shadow-xl">
-                    <div className="mb-6 grayscale group-hover:grayscale-0 transition-all duration-500">{v.icon}</div>
-                    <h3 className="font-montserrat font-bold text-xl mb-3 text-[var(--color-footer-bg)] text-left">{v.title}</h3>
+                  <div
+                    key={i}
+                    className="group relative content-island p-8 transition-all duration-300 hover:-translate-y-2 border-l-4 border-transparent hover:border-[var(--color-accent)] hover:shadow-xl flex flex-col items-start"
+                  >
+                    {/* Icon wrapper */}
+                    <div className="relative w-14 h-14 mb-6">
+                      {/* Grey static icon (all cards) */}
+                      <svg
+                        className="w-full h-full text-gray-300 absolute top-0 left-0"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        {v.paths.map((p, idx) => (
+                          <path key={idx} d={p.d} />
+                        ))}
+                      </svg>
+
+                      {/* Colored animated icon */}
+                      <svg
+                        className={`w-full h-full relative stroke-current ${v.color} draw-path ${v.thunder ? 'shock-hover' : ''}`}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        style={{ '--dash-length': v.dash } as React.CSSProperties}
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        {v.paths.map((p, idx) => (
+                          <path
+                            key={idx}
+                            className={`draw-path draw-path-delay-${p.delay}`}
+                            d={p.d}
+                          />
+                        ))}
+                      </svg>
+                    </div>
+
+                    <h3 className="font-montserrat font-bold text-xl mb-3 text-[var(--color-footer-bg)] text-left">
+                      {v.title}
+                    </h3>
                     <p className="font-raleway text-gray-600 text-left leading-relaxed">{v.desc}</p>
                   </div>
                 ))}

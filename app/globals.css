@@ -303,3 +303,45 @@ hr.header-separator {
   60% { transform: translateY(-5px); }
 }
 .animate-bounce-arrow { animation: arrow-bounce 2s infinite; }
+
+@layer utilities {
+  /* --- Stroke path setup --- */
+  .draw-path {
+    stroke-dasharray: var(--dash-length, 200);
+    stroke-dashoffset: var(--dash-length, 200);
+    opacity: 0.4;
+    transition: stroke-dashoffset 0.8s ease, opacity 0.4s ease;
+  }
+
+  /* --- Shock/Thunder hover animation --- */
+  @keyframes shock {
+    0%   { transform: scale(1) rotate(0deg); opacity: 1; }
+    25%  { transform: scale(1.05) rotate(2deg); opacity: 1; }
+    50%  { transform: scale(0.95) rotate(-2deg); opacity: 1; }
+    75%  { transform: scale(1.03) rotate(1deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+
+  .shock-hover {
+    transition: transform 0.1s ease;
+  }
+
+  .group:hover .shock-hover {
+    animation: shock 0.5s ease forwards;
+  }
+
+  /* --- Draw animation on hover --- */
+  .group:hover .draw-path {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+
+  /* --- Delays for paths --- */
+  .draw-path-delay-100 { transition-delay: 0.1s; }
+  .draw-path-delay-200 { transition-delay: 0.2s; }
+  .draw-path-delay-300 { transition-delay: 0.3s; }
+  .draw-path-delay-350 { transition-delay: 0.35s; }
+  .draw-path-delay-400 { transition-delay: 0.4s; }
+  .draw-path-delay-450 { transition-delay: 0.45s; }
+  .draw-path-delay-500 { transition-delay: 0.5s; }
+}
