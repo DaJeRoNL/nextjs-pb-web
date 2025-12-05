@@ -48,7 +48,7 @@ export async function sendMagicLink(prevState: any, formData: FormData) {
       .setExpirationTime('1h')
       .sign(SECRET);
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://placebyte.com';
     const link = `${baseUrl}/userpreferences/manage?token=${token}`;
 
     await resend.emails.send({
