@@ -93,7 +93,7 @@ const HeroButtons = () => {
       >
         <Link 
           href="/contact?type=talent" 
-          className="min-btn"
+          className="min-btn min-btn-dark-blue" // Added class for dark mode override
           style={{ 
             backgroundColor: 'var(--color-footer-bg)', 
             color: 'white',
@@ -129,7 +129,7 @@ const HeroSection = () => {
   return (
     <section id="home" className="relative pt-40 pb-32 overflow-hidden z-10 min-h-screen flex flex-col justify-center">
       <div className="container mx-auto px-6 max-w-5xl text-center relative z-10">
-        <h1 className="font-arimo font-light text-4xl md:text-6xl text-gray-900 leading-tight mb-12" style={{ fontWeight: 300 }}>
+        <h1 className="font-arimo font-light text-4xl md:text-6xl text-gray-900 dark:text-white leading-tight mb-12" style={{ fontWeight: 300 }}>
           Where people, platforms, and performance come together one smart{' '}
           <span 
             onMouseLeave={handleByteLeave}
@@ -140,7 +140,7 @@ const HeroSection = () => {
           </span>{' '}
           at a time.
         </h1>
-        <p className="font-raleway font-light italic text-2xl md:text-3xl text-gray-600 mt-12 max-w-4xl mx-auto mb-16 leading-relaxed">
+        <p className="font-raleway font-light italic text-2xl md:text-3xl text-gray-600 dark:text-gray-300 mt-12 max-w-4xl mx-auto mb-16 leading-relaxed">
           On-demand people and platform support that strengthens your ops with recruitment, plug-and-play teams, or automation so your team moves faster with less effort.
         </p>
         
@@ -167,12 +167,12 @@ const ServicesSection = () => {
         <div ref={wrapperRef} className="content-island p-8 md:p-12 scroll-reveal relative">
           <div className="text-center mb-12 px-6">
             <p className="font-raleway font-bold uppercase tracking-wider mb-4" style={{color: 'var(--color-accent)'}}>HOW CAN WE HELP YOU?</p>
-            <h2 className="font-montserrat font-bold text-4xl" style={{ color: 'var(--color-footer-bg)' }}>A Smarter Way to Grow</h2>
-            <p className="font-raleway text-lg text-gray-600 mt-4 max-w-2xl mx-auto">Three layers that work together or solo, depending on what you need.</p>
+            <h2 className="font-montserrat font-bold text-4xl text-[var(--color-footer-bg)] dark:text-white">A Smarter Way to Grow</h2>
+            <p className="font-raleway text-lg text-gray-600 dark:text-gray-300 mt-4 max-w-2xl mx-auto">Three layers that work together or solo, depending on what you need.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {services.map((service, index) => (
-              <div key={index} className="flex flex-col bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group">
+              <div key={index} className="flex flex-col bg-white dark:bg-zinc-800 rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group border border-transparent dark:border-white/10">
                 <div className="h-48 relative overflow-hidden clip-diagonal-bottom">
                   <Image 
                     src={service.image} 
@@ -184,7 +184,7 @@ const ServicesSection = () => {
                 </div>
                 <div className="p-8 flex flex-col flex-grow">
                   <h3 className="font-montserrat font-bold text-2xl mb-4" style={{ color: service.color }}>{service.title}</h3>
-                  <p className="font-raleway text-gray-600 mb-6 flex-grow leading-relaxed">{service.description}</p>
+                  <p className="font-raleway text-gray-600 dark:text-gray-200 mb-6 flex-grow leading-relaxed">{service.description}</p>
                   <Link href={service.link} className="font-raleway font-bold text-sm self-end mt-auto transition-all duration-300 group flex items-center gap-1" style={{ color: service.color }}>
                     Learn more<span className="transform transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
                   </Link>
@@ -206,7 +206,7 @@ const CTABeforeFooter = () => {
       <div className="container mx-auto px-6 max-w-4xl text-center">
         <div ref={ctaRef} className="relative scroll-reveal">
           <p className="font-raleway font-bold uppercase tracking-wider mb-4" style={{color: 'var(--color-accent)'}}>Ready to grow?</p>
-          <h2 className="font-montserrat font-bold text-5xl mb-12" style={{ color: 'var(--color-footer-bg)' }}>Start your transformation.</h2>
+          <h2 className="font-montserrat font-bold text-5xl mb-12 text-[var(--color-footer-bg)] dark:text-white">Start your transformation.</h2>
           <HeroButtons />
         </div>
       </div>
@@ -318,9 +318,9 @@ export default function App() {
                     {/* Left Column: Copy */}
                     <div>
                         <p className='font-raleway font-bold uppercase tracking-wider mb-4' style={{color:'var(--color-accent)'}}>Why PlaceByte?</p>
-                        <h2 className='font-montserrat font-bold text-4xl mb-6' style={{ color: 'var(--color-footer-bg)' }}>Engineered for Growth</h2>
+                        <h2 className='font-montserrat font-bold text-4xl mb-6 text-[var(--color-footer-bg)] dark:text-white'>Engineered for Growth</h2>
                         <hr className='header-separator mx-0 mb-8'/>
-                        <div className='font-raleway text-lg text-gray-700 space-y-6'>
+                        <div className='font-raleway text-lg text-gray-700 dark:text-gray-300 space-y-6'>
                             <p className='leading-relaxed'>
                               We built PlaceByte on a simple idea. Great teams are engineered, supported, and powered. So we created three layers that work together or solo, depending on what you need. Recruitment brings you the talent. OpsByte plugs in the team that keeps your workflows moving without the cost and chaos of traditional hiring. CoreByte powers the workspace behind it all with automation.
                             </p>
@@ -328,45 +328,45 @@ export default function App() {
                     </div>
 
                     {/* Right Column: Benefits with SVGs */}
-                    <div className="space-y-8 bg-gray-50/50 p-8 rounded-2xl border border-gray-100">
+                    <div className="space-y-8 bg-gray-50/50 dark:bg-zinc-800/30 p-8 rounded-2xl border border-gray-100 dark:border-white/10">
                         
                         {/* Talent */}
                         <div className="flex gap-5 items-start min-h-[90px]">
-                            <div className="w-12 h-12 shrink-0 flex items-center justify-center bg-white rounded-full shadow-sm text-[var(--color-accent)]">
+                            <div className="w-12 h-12 shrink-0 flex items-center justify-center bg-white dark:bg-zinc-700 rounded-full shadow-sm text-[var(--color-accent)]">
                                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                 </svg>
                             </div>
                             <div>
-                                <h4 className="font-montserrat font-bold text-lg text-[var(--color-footer-bg)]">Talent</h4>
-                                <p className="font-raleway text-gray-600 text-sm mt-1 leading-relaxed">PlaceByte finds the cultural fits that generic recruiters miss.</p>
+                                <h4 className="font-montserrat font-bold text-lg text-[var(--color-footer-bg)] dark:text-white">Talent</h4>
+                                <p className="font-raleway text-gray-600 dark:text-gray-300 text-sm mt-1 leading-relaxed">PlaceByte finds the cultural fits that generic recruiters miss.</p>
                             </div>
                         </div>
 
                         {/* Speed */}
                         <div className="flex gap-5 items-start min-h-[90px]">
-                            <div className="w-12 h-12 shrink-0 flex items-center justify-center bg-white rounded-full shadow-sm text-[var(--color-lime-dark)]">
+                            <div className="w-12 h-12 shrink-0 flex items-center justify-center bg-white dark:bg-zinc-700 rounded-full shadow-sm text-[var(--color-lime-dark)]">
                                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                                 </svg>
                             </div>
                             <div>
-                                <h4 className="font-montserrat font-bold text-lg text-[var(--color-footer-bg)]">Speed</h4>
-                                <p className="font-raleway text-gray-600 text-sm mt-1 leading-relaxed">OpsByte plugs in vetted teams instantly. No 3-month hiring cycles.</p>
+                                <h4 className="font-montserrat font-bold text-lg text-[var(--color-footer-bg)] dark:text-white">Speed</h4>
+                                <p className="font-raleway text-gray-600 dark:text-gray-300 text-sm mt-1 leading-relaxed">OpsByte plugs in vetted teams instantly. No 3-month hiring cycles.</p>
                             </div>
                         </div>
 
                         {/* System */}
                         <div className="flex gap-5 items-start min-h-[90px]">
-                            <div className="w-12 h-12 shrink-0 flex items-center justify-center bg-white rounded-full shadow-sm text-[var(--color-purple)]">
+                            <div className="w-12 h-12 shrink-0 flex items-center justify-center bg-white dark:bg-zinc-700 rounded-full shadow-sm text-[var(--color-purple)]">
                                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-1.066 2.573c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
                             </div>
                             <div>
-                                <h4 className="font-montserrat font-bold text-lg text-[var(--color-footer-bg)]">System</h4>
-                                <p className="font-raleway text-gray-600 text-sm mt-1 leading-relaxed">CoreByte automates the manual work so your people can focus on strategy.</p>
+                                <h4 className="font-montserrat font-bold text-lg text-[var(--color-footer-bg)] dark:text-white">System</h4>
+                                <p className="font-raleway text-gray-600 dark:text-gray-300 text-sm mt-1 leading-relaxed">CoreByte automates the manual work so your people can focus on strategy.</p>
                             </div>
                         </div>
 

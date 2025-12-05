@@ -209,7 +209,7 @@ export default function PlaceBytePage() {
       <div className="main-content pt-16 pb-16">
         <div className="container mx-auto px-4 max-w-7xl">
           
-          <div className="bg-white rounded-3xl shadow-2xl flex flex-col lg:flex-row min-h-[800px]">
+          <div className="bg-white rounded-3xl shadow-2xl flex flex-col lg:flex-row min-h-[800px] fix-pixelation">
             
             {/* LEFT PANEL */}
             <div className="lg:w-1/3 bg-[var(--color-footer-bg)] text-white flex flex-col relative rounded-t-3xl lg:rounded-l-3xl lg:rounded-tr-none">

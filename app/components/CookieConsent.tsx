@@ -5,18 +5,51 @@ import React, { useState, useEffect } from 'react';
 export default function CookieConsent() {
   const [isVisible, setIsVisible] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  
+  // New: Sync state with footer
+  const [marketingEnabled, setMarketingEnabled] = useState(false); 
 
   useEffect(() => {
+    // 1. Initial Check
     const consent = localStorage.getItem('placebyte_cookie_consent');
     if (consent === null) {
       setTimeout(() => setIsVisible(true), 1500);
+    } else {
+        // If consent exists, we assume user already chose.
+        // But we sync the internal state just in case we want to show it in the expanded view
+        setMarketingEnabled(consent === 'true');
     }
+
+    // 2. Listen for Footer changes
+    const handleSync = () => {
+        const currentConsent = localStorage.getItem('placebyte_cookie_consent');
+        if (currentConsent !== null) {
+            // If the user touched the footer, they have made a choice.
+            // Hide the banner if it was open.
+            setIsVisible(false);
+            setMarketingEnabled(currentConsent === 'true');
+        }
+    };
+
+    window.addEventListener('cookie-preference-changed', handleSync);
+    return () => window.removeEventListener('cookie-preference-changed', handleSync);
   }, []);
 
   const handleAccept = () => {
     localStorage.setItem('placebyte_cookie_consent', 'true');
     setIsVisible(false);
-    window.location.reload(); 
+    // Notify footer
+    window.dispatchEvent(new Event('cookie-preference-changed'));
+    // Optional: reload to activate scripts
+    // window.location.reload(); 
+  };
+
+  const handleDecline = () => {
+    // Decline means only strictly necessary
+    localStorage.setItem('placebyte_cookie_consent', 'false');
+    setIsVisible(false);
+    // Notify footer
+    window.dispatchEvent(new Event('cookie-preference-changed'));
   };
 
   const toggleExpand = () => {
@@ -32,7 +65,6 @@ export default function CookieConsent() {
         
         {/* Header / Bar */}
         <div className="flex items-center justify-between px-6 py-3 h-[60px] cursor-pointer" onClick={toggleExpand}>
-          {/* UPDATED: text-xs for mobile to prevent 3 lines */}
           <p className="text-xs sm:text-sm font-raleway font-medium pr-2">
             We use cookies to ensure you get the best experience on our website.
           </p>
@@ -63,13 +95,19 @@ export default function CookieConsent() {
                <span className="text-xs font-bold text-gray-300">Strictly Necessary</span>
                <span className="text-[10px] text-green-400 font-bold bg-green-900/30 px-2 py-0.5 rounded">Always Active</span>
             </div>
-            <div className="flex items-center justify-between border-b border-gray-800 pb-2">
-               <span className="text-xs font-bold text-gray-300">Analytics (Google)</span>
-               <span className="text-[10px] text-gray-500">Inactive</span>
-            </div>
-             <div className="flex items-center justify-between">
-               <span className="text-xs font-bold text-gray-300">Marketing</span>
-               <span className="text-[10px] text-gray-500">Inactive</span>
+            
+            {/* Added Interaction Here */}
+            <div className="flex items-center justify-between pt-2">
+               <span className="text-xs font-bold text-gray-300">Analytics & Marketing</span>
+               <div className="flex gap-2">
+                   <button onClick={handleDecline} className="text-[10px] text-gray-400 hover:text-white underline">
+                       Disable
+                   </button>
+                   <span className="text-[10px] text-gray-500">|</span>
+                   <button onClick={handleAccept} className="text-[10px] text-[var(--color-primary)] font-bold hover:text-white underline">
+                       Enable
+                   </button>
+               </div>
             </div>
           </div>
         </div>

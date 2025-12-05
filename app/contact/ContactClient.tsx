@@ -214,7 +214,8 @@ const ContactClient = () => {
       <div className="main-content pt-32 pb-16">
         <div className="container mx-auto px-6 max-w-6xl"> 
           <Suspense fallback={<LoadingSpinner />}>
-            <div className="w-full max-w-[1400px] mx-auto shadow-2xl rounded-2xl overflow-hidden bg-white flex flex-col lg:flex-row min-h-[700px] animate-fadeIn">
+            {/* Added fix-pixelation class here */}
+            <div className="w-full max-w-[1400px] mx-auto shadow-2xl rounded-2xl overflow-hidden bg-white flex flex-col lg:flex-row min-h-[700px] animate-fadeIn fix-pixelation">
               
               {/* LEFT PANEL */}
               <div className="lg:w-1/3 bg-[var(--color-footer-bg)] text-white p-10 lg:p-14 flex flex-col justify-between relative overflow-hidden">
@@ -276,12 +277,23 @@ const ContactClient = () => {
                             <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Phone Number</label><input name="phone" type="tel" onChange={handleInputChange} disabled={isSubmitting} className="w-full px-4 py-3 bg-gray-50 rounded-md border border-gray-200 focus:bg-white focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] outline-none transition-all disabled:opacity-50" placeholder="+1 (555) 000-0000" required /></div>
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Service Interest</label><div className="relative"><select name="service" onChange={handleInputChange} disabled={isSubmitting} className="w-full px-4 py-3 bg-gray-50 rounded-md border border-gray-200 focus:bg-white focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] outline-none transition-all appearance-none text-gray-700 disabled:opacity-50"><option>Recruitment (PlaceByte)</option><option>Operations Team (OpsByte)</option><option><option>Systems & Automation (CoreByte)</option></option><option>Other / Not Sure</option></select><div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500"><svg className="fill-current h-4 w-4" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg></div></div></div>
+                            <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Service Interest</label><div className="relative"><select name="service" onChange={handleInputChange} disabled={isSubmitting} className="w-full px-4 py-3 bg-gray-50 rounded-md border border-gray-200 focus:bg-white focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] outline-none transition-all appearance-none text-gray-700 disabled:opacity-50"><option>Recruitment (PlaceByte)</option><option>Operations Team (OpsByte)</option><option>Systems & Automation (CoreByte)</option><option>Other / Not Sure</option></select><div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500"><svg className="fill-current h-4 w-4" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg></div></div></div>
                             <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Preferred Contact</label><div className="relative"><select name="contactMethod" onChange={handleInputChange} disabled={isSubmitting} className="w-full px-4 py-3 bg-gray-50 rounded-md border border-gray-200 focus:bg-white focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] outline-none transition-all appearance-none text-gray-700 disabled:opacity-50"><option>Email</option><option>Phone Call</option><option>WhatsApp</option></select><div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500"><svg className="fill-current h-4 w-4" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg></div></div></div>
                           </div>
                           <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Additional Details</label><textarea name="details" onChange={handleInputChange} disabled={isSubmitting} rows={3} className="w-full px-4 py-3 bg-gray-50 rounded-md border border-gray-200 focus:bg-white focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] outline-none transition-all resize-none disabled:opacity-50" placeholder="Tell us about your needs..."></textarea></div>
-                          
-                          <div className="flex items-start mt-4"><input id="terms-client" name="terms" type="checkbox" onChange={handleInputChange} disabled={isSubmitting} className="mt-1 h-4 w-4 text-[var(--color-accent)] border-gray-300 rounded focus:ring-[var(--color-accent)] cursor-pointer" required /><label htmlFor="terms-client" className="ml-2 block text-xs text-gray-500">I agree to the <a href="/terms" target="_blank" className="underline hover:text-gray-800">Terms</a> & <a href="/privacy" target="_blank" className="underline hover:text-gray-800">Privacy Policy</a>.</label></div>
+                          <div className="flex items-start mt-4">
+                            <input 
+                              id="terms-client" 
+                              name="terms" 
+                              type="checkbox" 
+                              onChange={handleInputChange} 
+                              disabled={isSubmitting}
+                              style={{ colorScheme: 'light' }}
+                              className="mt-1 h-4 w-4 text-[var(--color-accent)] border-gray-300 rounded focus:ring-[var(--color-accent)] cursor-pointer bg-white dark:bg-white dark:border-gray-300" 
+                              required 
+                            />
+                            <label htmlFor="terms-client" className="ml-2 block text-xs text-gray-500">I agree to the <a href="/terms" target="_blank" className="underline hover:text-gray-800">Terms</a> & <a href="/privacy" target="_blank" className="underline hover:text-gray-800">Privacy Policy</a>.</label>
+                          </div>
                           
                           <div className="mt-4 mb-4">
                             {/* Hide widget once token is successfully generated */}
@@ -292,6 +304,7 @@ const ContactClient = () => {
                             ) : (
                                 <Turnstile 
                                   siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''} 
+                                  options={{ theme: 'light' }}
                                   onSuccess={(token) => setTurnstileToken(token)}
                                   onExpire={() => setTurnstileToken(null)}
                                 />
@@ -303,7 +316,7 @@ const ContactClient = () => {
                             disabled={!isFormValid || isSubmitting} 
                             className={`px-8 py-3 rounded-md font-bold font-montserrat text-sm uppercase tracking-wide transition-all duration-300 flex items-center shadow-md 
                               ${!isFormValid || isSubmitting 
-                                ? 'bg-white border border-gray-200 text-gray-400 cursor-not-allowed shadow-none' // UPDATED STYLE
+                                ? 'bg-white border border-gray-200 text-gray-400 cursor-not-allowed shadow-none' 
                                 : 'bg-[var(--color-accent)] text-white hover:bg-orange-700 hover:shadow-lg translate-y-0'}`
                             }
                           >
@@ -329,9 +342,19 @@ const ContactClient = () => {
                           <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Specific Role / Title</label><input name="specificRole" type="text" onChange={handleInputChange} disabled={isSubmitting} className="w-full px-4 py-3 bg-gray-50 rounded-md border border-gray-200 focus:bg-white focus:border-[var(--color-footer-bg)] focus:ring-1 focus:ring-[var(--color-footer-bg)] outline-none transition-all disabled:opacity-50" placeholder="e.g. React Dev" /></div>
                           <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Additional Information / Work Preferences</label><textarea name="details" rows={4} onChange={handleInputChange} disabled={isSubmitting} className="w-full px-4 py-3 bg-gray-50 rounded-md border border-gray-200 focus:bg-white focus:border-[var(--color-footer-bg)] focus:ring-1 focus:ring-[var(--color-footer-bg)] outline-none transition-all disabled:opacity-50" placeholder="e.g. Remote work only, Part-time availability, Salary expectations..."></textarea></div>
                           <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Upload CV (PDF)</label><div className="relative border-2 border-dashed border-gray-300 rounded-md p-6 text-center hover:bg-gray-50 transition-colors"><input name="cv" type="file" accept=".pdf" onChange={handleInputChange} disabled={isSubmitting} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" required /><div className="text-gray-500"><span className="block text-sm font-medium text-[var(--color-footer-bg)]">Click to upload</span><span className="block text-xs mt-1">or drag and drop PDF (Max 5MB)</span>{formData.cv && <span className="block mt-2 text-sm text-green-600 font-bold">Selected: {formData.cv.name}</span>}</div></div></div>
-                          
-                          <div className="flex items-center mt-4"><input id="terms-talent" name="terms" type="checkbox" onChange={handleInputChange} disabled={isSubmitting} className="h-4 w-4 text-[var(--color-footer-bg)] border-gray-300 rounded focus:ring-[var(--color-footer-bg)] cursor-pointer" required /><label htmlFor="terms-talent" className="ml-2 block text-xs text-gray-500">I agree to the <a href="/terms" target="_blank" className="underline hover:text-gray-800">Terms</a> & <a href="/privacy" target="_blank" className="underline hover:text-gray-800">Privacy Policy</a>.</label></div>
-                          
+                          <div className="flex items-start mt-4">
+                            <input 
+                              id="terms-client" 
+                              name="terms" 
+                              type="checkbox" 
+                              onChange={handleInputChange} 
+                              disabled={isSubmitting}
+                              style={{ colorScheme: 'light' }}
+                              className="mt-1 h-4 w-4 text-[var(--color-accent)] border-gray-300 rounded focus:ring-[var(--color-accent)] cursor-pointer bg-white dark:bg-white dark:border-gray-300" 
+                              required 
+                            />
+                            <label htmlFor="terms-client" className="ml-2 block text-xs text-gray-500">I agree to the <a href="/terms" target="_blank" className="underline hover:text-gray-800">Terms</a> & <a href="/privacy" target="_blank" className="underline hover:text-gray-800">Privacy Policy</a>.</label>
+                          </div>                          
                           <div className="mt-4 mb-4">
                             {/* Hide widget once token is successfully generated */}
                             {turnstileToken ? (
@@ -341,6 +364,7 @@ const ContactClient = () => {
                             ) : (
                                 <Turnstile 
                                   siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''} 
+                                  options={{ theme: 'light' }}
                                   onSuccess={(token) => setTurnstileToken(token)}
                                   onExpire={() => setTurnstileToken(null)}
                                 />
@@ -357,10 +381,20 @@ const ContactClient = () => {
                           <input type="text" name="website_url" style={{display:'none'}} tabIndex={-1} autoComplete="off" />
                           <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Name</label><input name="name" type="text" onChange={handleInputChange} disabled={isSubmitting} className="w-full px-4 py-3 bg-gray-50 rounded-md border border-gray-200 focus:bg-white focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] outline-none transition-all disabled:opacity-50" required /></div>
                           <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Email</label><input name="email" type="email" onChange={handleInputChange} disabled={isSubmitting} className="w-full px-4 py-3 bg-gray-50 rounded-md border border-gray-200 focus:bg-white focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] outline-none transition-all disabled:opacity-50" required /></div>
-                          <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Message</label><textarea name="message" rows={4} onChange={handleInputChange} disabled={isSubmitting} className="w-full px-4 py-3 bg-gray-50 rounded-md border border-gray-200 focus:bg-white focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] outline-none transition-all disabled:opacity-50" required></textarea></div>
-                          
-                          <div className="flex items-center mt-4"><input id="terms-general" name="terms" type="checkbox" onChange={handleInputChange} disabled={isSubmitting} className="mt-1 h-4 w-4 text-[var(--color-primary)] border-gray-300 rounded focus:ring-[var(--color-primary)] cursor-pointer" required /><label htmlFor="terms-general" className="ml-2 block text-xs text-gray-500">I agree to the <a href="/terms" target="_blank" className="underline hover:text-gray-800">Terms</a> & <a href="/privacy" target="_blank" className="underline hover:text-gray-800">Privacy Policy</a>.</label></div>
-                          
+                          <div><label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Message</label><textarea name="message" rows={4} onChange={handleInputChange} disabled={isSubmitting} className="w-full px-4 py-3 bg-gray-50 rounded-md border border-gray-200 focus:bg-white focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)] outline-none transition-all disabled:opacity-50" required></textarea></div>                          
+                          <div className="flex items-start mt-4">
+                            <input 
+                              id="terms-client" 
+                              name="terms" 
+                              type="checkbox" 
+                              onChange={handleInputChange} 
+                              disabled={isSubmitting}
+                              style={{ colorScheme: 'light' }}
+                              className="mt-1 h-4 w-4 text-[var(--color-accent)] border-gray-300 rounded focus:ring-[var(--color-accent)] cursor-pointer bg-white dark:bg-white dark:border-gray-300" 
+                              required 
+                            />
+                            <label htmlFor="terms-client" className="ml-2 block text-xs text-gray-500">I agree to the <a href="/terms" target="_blank" className="underline hover:text-gray-800">Terms</a> & <a href="/privacy" target="_blank" className="underline hover:text-gray-800">Privacy Policy</a>.</label>
+                          </div>                          
                           <div className="mt-4 mb-4">
                             {/* Hide widget once token is successfully generated */}
                             {turnstileToken ? (
@@ -370,6 +404,7 @@ const ContactClient = () => {
                             ) : (
                                 <Turnstile 
                                   siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''} 
+                                  options={{ theme: 'light' }}
                                   onSuccess={(token) => setTurnstileToken(token)}
                                   onExpire={() => setTurnstileToken(null)}
                                 />

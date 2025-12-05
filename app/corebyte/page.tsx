@@ -190,7 +190,7 @@ export default function CoreBytePage() {
         <div className="container mx-auto px-4 max-w-7xl">
           
           {/* BIG CARD LAYOUT */}
-          <div className="bg-white rounded-3xl shadow-2xl flex flex-col lg:flex-row min-h-[800px]">
+          <div className="bg-white rounded-3xl shadow-2xl flex flex-col lg:flex-row min-h-[800px] fix-pixelation">
             
             {/* --- LEFT PANEL --- */}
             <div className="lg:w-1/3 bg-[var(--color-footer-bg)] text-white flex flex-col relative rounded-t-3xl lg:rounded-l-3xl lg:rounded-tr-none">

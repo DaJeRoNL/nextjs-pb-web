@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link'; // Keep if you use Link inside content
+import Link from 'next/link'; 
 import Header from '../components/Header'; 
 import Footer from '../components/Footer'; 
 
@@ -39,7 +39,7 @@ export default function TermsPage() {
       <div className="main-content pt-32 pb-16">
         <div className="container mx-auto px-6 max-w-5xl">
           
-          <div className="content-island p-10 md:p-16">
+          <div className="content-island p-10 md:p-16 !bg-white text-black fix-pixelation">
              <h1 className="font-montserrat font-bold text-4xl mb-8 text-[var(--color-footer-bg)] text-center">Terms & Conditions</h1>
              <p className="font-raleway text-sm text-gray-500 text-center mb-12">Last Updated: June 19, 2025</p>
 

@@ -25,20 +25,18 @@ export const metadata: Metadata = {
     default: 'PlaceByte - Engineered for Growth',
   },
   description: "Recruitment, Operations, and Systems Automation for modern teams.",
+  // Force disable Dark Reader
+  other: {
+    "darkreader-lock": "true",
+  },
   icons: {
     icon: [
-      // Standard browser tab icon
       { url: '/PBFweb16.png', sizes: '16x16', type: 'image/png' },
-      // High-DPI/Windows taskbar icon
       { url: '/PBFweb32.png', sizes: '32x32', type: 'image/png' },
-      // Windows site/high-res desktop icon
       { url: '/PBFweb48.png', sizes: '48x48', type: 'image/png' },
-      // Android/PWA icon (used for Chrome/Android launchers)
       { url: '/PBFweb192.png', sizes: '192x192', type: 'image/png' }, 
     ],
-    // Fallback shortcut icon
     shortcut: '/PBFweb16.png',
-    // Apple Touch Icon for iOS home screens
     apple: [
         { url: '/PBFweb180.png', sizes: '180x180', type: 'image/png' }
     ],
@@ -67,9 +65,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${montserrat.variable} ${raleway.variable} ${arimo.variable}`}>
-        {/* Wrap children in SmoothScrolling */}
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta name="color-scheme" content="light dark" />
+        <meta name="darkreader-lock" content="true" />
+      </head>
+      {/* Updated dark background to Zinc-900 (#18181b) to match globals.css */}
+      <body className={`${montserrat.variable} ${raleway.variable} ${arimo.variable} bg-white dark:bg-[#18181b] text-gray-900 dark:text-gray-100 transition-colors duration-300`}>
         <SmoothScrolling>
           {children}
           <CookieConsent />
