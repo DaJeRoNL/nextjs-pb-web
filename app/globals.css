@@ -243,3 +243,33 @@ hr.header-separator {
   .group:hover .draw-path { stroke-dashoffset: 0; opacity: 1; }
   .draw-path-delay-100 { transition-delay: 0.1s; } .draw-path-delay-200 { transition-delay: 0.2s; } .draw-path-delay-300 { transition-delay: 0.3s; } .draw-path-delay-350 { transition-delay: 0.35s; } .draw-path-delay-400 { transition-delay: 0.4s; } .draw-path-delay-450 { transition-delay: 0.45s; } .draw-path-delay-500 { transition-delay: 0.5s; }
 }
+
+/* --- REDUCE MOTION KILL SWITCH --- */
+/* When the .reduce-motion class is present on HTML, 
+   force-stop all animations and transitions.
+*/
+html.reduce-motion *,
+html.reduce-motion *::before,
+html.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Specifically target your custom classes if needed */
+html.reduce-motion .scroll-reveal {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+  transition: none !important;
+}
+
+html.reduce-motion .glass-blob-1,
+html.reduce-motion .glass-blob-2,
+html.reduce-motion .glass-blob-3 {
+  animation: none !important;
+  transition: none !important;
+  /* Optional: Hide heavy blobs completely if you want a cleaner look */
+  /* opacity: 0.2 !important; */
+}

@@ -21,10 +21,22 @@ const ThemeToggle = () => {
 
   useEffect(() => {
     setMounted(true);
-    const theme = localStorage.getItem('placebyte_theme');
-    if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      setIsDark(true);
-    }
+    
+    // 1. Initial Check
+    const checkTheme = () => {
+      const theme = localStorage.getItem('placebyte_theme');
+      if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        setIsDark(true);
+      } else {
+        setIsDark(false);
+      }
+    };
+
+    checkTheme();
+
+    // 2. Listen for synchronization event from Footer
+    window.addEventListener('theme-changed', checkTheme);
+    return () => window.removeEventListener('theme-changed', checkTheme);
   }, []);
 
   const toggleTheme = () => {
@@ -38,6 +50,8 @@ const ThemeToggle = () => {
       localStorage.setItem('placebyte_theme', 'light');
       html.classList.remove('dark');
     }
+    // 3. Dispatch event to notify Footer
+    window.dispatchEvent(new Event('theme-changed'));
   };
 
   if (!mounted) return <div className="w-10 h-10" />; 
@@ -51,7 +65,10 @@ const ThemeToggle = () => {
       <div className="absolute inset-0 rounded-full border-2 border-transparent group-hover:border-[var(--color-primary)] dark:group-hover:border-white transition-colors duration-300 scale-90 group-hover:scale-100 opacity-0 group-hover:opacity-100"></div>
 
       {isDark ? (
-        <svg className="w-5 h-5 text-white transition-transform duration-500 rotate-0 group-hover:-rotate-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        // FIX: Changed 'text-white' to 'text-gray-700 dark:text-white'
+        // This ensures the icon is dark gray (visible) when on a forced-light page,
+        // but turns white when actual dark mode is applied.
+        <svg className="w-5 h-5 text-gray-700 dark:text-white transition-transform duration-500 rotate-0 group-hover:-rotate-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
         </svg>
       ) : (

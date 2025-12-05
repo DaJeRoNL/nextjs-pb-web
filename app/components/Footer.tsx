@@ -41,7 +41,13 @@ export default function Footer() {
     checkTheme();
 
     window.addEventListener('cookie-preference-changed', checkConsent);
-    return () => window.removeEventListener('cookie-preference-changed', checkConsent);
+    // 1. Listen for theme changes from Header
+    window.addEventListener('theme-changed', checkTheme);
+    
+    return () => {
+      window.removeEventListener('cookie-preference-changed', checkConsent);
+      window.removeEventListener('theme-changed', checkTheme);
+    };
   }, []);
 
   const toggleMotion = () => {
@@ -67,6 +73,8 @@ export default function Footer() {
       localStorage.setItem('placebyte_theme', 'light');
       html.classList.remove('dark');
     }
+    // 2. Dispatch event to notify Header
+    window.dispatchEvent(new Event('theme-changed'));
   };
 
   if (!mounted) return null; 

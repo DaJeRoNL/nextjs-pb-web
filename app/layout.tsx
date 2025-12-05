@@ -19,6 +19,19 @@ const arimo = Arimo({
   variable: "--font-arimo",
 });
 
+// --- Theme Initialization Script ---
+const themeScript = `
+  (function() {
+    const root = document.documentElement;
+    const initialTheme = localStorage.getItem('placebyte_theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    if (initialTheme === 'dark' || (!initialTheme && systemPrefersDark)) {
+      root.classList.add('dark');
+    }
+  })();
+`;
+
 export const metadata: Metadata = {
   title: {
     template: '%s | PlaceByte',
@@ -65,10 +78,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    // Note: The body classes are intentionally generic/transitional
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="color-scheme" content="light dark" />
         <meta name="darkreader-lock" content="true" />
+        {/* INJECT THEME SCRIPT HERE TO RUN BEFORE RENDERING */}
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       {/* Updated dark background to Zinc-900 (#18181b) to match globals.css */}
       <body className={`${montserrat.variable} ${raleway.variable} ${arimo.variable} bg-white dark:bg-[#18181b] text-gray-900 dark:text-gray-100 transition-colors duration-300`}>
