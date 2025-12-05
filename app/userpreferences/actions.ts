@@ -6,30 +6,67 @@ import { z } from 'zod';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const SECRET = new TextEncoder().encode(process.env.TURNSTILE_SECRET_KEY || 'fallback_secret_please_change'); 
-// Note: Ideally add a distinct JWT_SECRET to your .env, but reusing a secret works for a start.
 
 const loginSchema = z.object({
   email: z.string().email(),
 });
 
+// --- HELPER: Turnstile Verification ---
+async function validateTurnstile(token: string | undefined) {
+  if (!token) return { success: false, message: "Security check missing." };
+
+  try {
+    const verifyResult = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        secret: process.env.TURNSTILE_SECRET_KEY,
+        response: token,
+      }),
+    });
+
+    const verifyOutcome = await verifyResult.json();
+    if (!verifyOutcome.success) {
+      console.error("Turnstile verification failed:", verifyOutcome);
+      return { success: false, message: "Security check failed. Please try again." };
+    }
+    return { success: true };
+  } catch (error) {
+    console.error("Turnstile error:", error);
+    return { success: false, message: "Security check error." };
+  }
+}
+
 // 1. GENERATE MAGIC LINK & SEND EMAIL
 export async function sendMagicLink(prevState: any, formData: FormData) {
+  // A. Honeypot Check
+  const honeypot = formData.get('website_url');
+  if (honeypot && honeypot.toString().length > 0) {
+    console.warn("Bot attempt blocked (honeypot).");
+    return { success: false, message: "Spam detected." };
+  }
+
+  // B. Turnstile Check
+  const turnstileToken = formData.get('cf-turnstile-response') as string;
+  const securityCheck = await validateTurnstile(turnstileToken);
+  if (!securityCheck.success) {
+    return { success: false, message: securityCheck.message };
+  }
+
+  // C. Normal Logic
   const email = formData.get('email') as string;
-  
   const validated = loginSchema.safeParse({ email });
   if (!validated.success) {
     return { success: false, message: 'Please enter a valid email address.' };
   }
 
   try {
-    // Create a signed token valid for 1 hour
     const token = await new SignJWT({ email })
       .setProtectedHeader({ alg: 'HS256' })
       .setIssuedAt()
       .setExpirationTime('1h')
       .sign(SECRET);
 
-    // Create the link (Adjust 'localhost' to your actual domain in production)
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     const link = `${baseUrl}/userpreferences/manage?token=${token}`;
 
@@ -56,7 +93,7 @@ export async function sendMagicLink(prevState: any, formData: FormData) {
   }
 }
 
-// 2. VERIFY TOKEN (Helper for the page)
+// 2. VERIFY TOKEN (Helper)
 export async function verifyMagicToken(token: string) {
   try {
     const { payload } = await jwtVerify(token, SECRET);
@@ -67,24 +104,29 @@ export async function verifyMagicToken(token: string) {
 }
 
 // 3. HANDLE PREFERENCE UPDATES
-export async function updatePreferences(token: string, preferences: any) {
-  // Verify again to ensure the request is legit
+// Updated signature to accept Turnstile Token
+export async function updatePreferences(token: string, preferences: any, turnstileToken: string) {
+  
+  // A. Turnstile Check (Prevents Spamming Updates)
+  // Since Turnstile tokens are single-use, this prevents replaying the request 10 times.
+  const securityCheck = await validateTurnstile(turnstileToken);
+  if (!securityCheck.success) {
+    return { success: false, message: securityCheck.message };
+  }
+
+  // B. Verify Session
   const auth = await verifyMagicToken(token);
   if (!auth.valid || !auth.email) {
     return { success: false, message: 'Session expired. Please request a new link.' };
   }
 
   try {
-    // SEND "ETL-READY" EMAIL TO YOUR ADMIN
-    // This subject line helps your scripts pick it up automatically
     const subject = `[PREF_UPDATE] ${auth.email}`;
-    
     const emailBody = `
       <h1>User Preference Update</h1>
       <p><strong>User:</strong> ${auth.email}</p>
       <p><strong>Action Required:</strong></p>
       <pre>${JSON.stringify(preferences, null, 2)}</pre>
-      
       <hr />
       <h3>ETL Data Block:</h3>
       <code>
@@ -100,7 +142,7 @@ export async function updatePreferences(token: string, preferences: any) {
 
     await resend.emails.send({
       from: "PlaceByte System <system@placebyte.com>",
-      to: "team@placebyte.com", // Your admin/ETL inbox
+      to: "team@placebyte.com",
       subject: subject,
       html: emailBody,
     });

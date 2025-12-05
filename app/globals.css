@@ -123,6 +123,7 @@ hr.header-separator {
 
 /* Fix for pixelated rounded corners on Webkit browsers */
 .fix-pixelation {
+  mask-image: radial-gradient(white, black);
   -webkit-mask-image: -webkit-radial-gradient(white, black);
   transform: translateZ(0);
 }

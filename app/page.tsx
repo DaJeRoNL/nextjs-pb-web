@@ -164,7 +164,8 @@ const ServicesSection = () => {
   return (
     <section id="services" className="py-16 relative z-10">
       <div className="container mx-auto px-6 max-w-7xl">
-        <div ref={wrapperRef} className="content-island p-8 md:p-12 scroll-reveal relative">
+        {/* Big Island 1: Keeps borders (via content-island class default) */}
+        <div ref={wrapperRef} className="content-island p-8 md:p-12 scroll-reveal relative !bg-white/80 dark:!bg-zinc-900/80 backdrop-blur-xl">
           <div className="text-center mb-12 px-6">
             <p className="font-raleway font-bold uppercase tracking-wider mb-4" style={{color: 'var(--color-accent)'}}>HOW CAN WE HELP YOU?</p>
             <h2 className="font-montserrat font-bold text-4xl text-[var(--color-footer-bg)] dark:text-white">A Smarter Way to Grow</h2>
@@ -172,7 +173,8 @@ const ServicesSection = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {services.map((service, index) => (
-              <div key={index} className="flex flex-col bg-white dark:bg-zinc-800 rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group border border-transparent dark:border-white/10">
+              // UPDATED: Removed dark:border-white/10 (now border-none in dark mode implicitly or explicit dark:border-none)
+              <div key={index} className="flex flex-col bg-white dark:bg-zinc-800 rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 group border border-transparent dark:border-none">
                 <div className="h-48 relative overflow-hidden clip-diagonal-bottom">
                   <Image 
                     src={service.image} 
@@ -234,11 +236,15 @@ const ScrollToTopButton = () => {
   return (
     <button 
       onClick={scrollToTop} 
-      className={`scroll-to-top-button ${isVisible ? 'visible' : ''} ${isClicked ? 'clicked' : ''}`} 
+      // UPDATED: Light mode = White bg/Dark text. Dark mode = Zinc-800 bg/White text.
+      className={`scroll-to-top-button 
+        bg-white text-[var(--color-footer-bg)] border border-gray-200
+        dark:bg-zinc-800 dark:text-white dark:border-white/10
+        ${isVisible ? 'visible' : ''} ${isClicked ? 'clicked' : ''}`} 
       aria-label="Scroll to top"
     >
       {isClicked ? (
-        <div className="w-6 h-1 bg-[var(--color-footer-bg)] rounded-full"></div>
+        <div className="w-6 h-1 bg-[var(--color-footer-bg)] dark:bg-white rounded-full"></div>
       ) : (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5"></path>
@@ -312,7 +318,8 @@ export default function App() {
 
           <section id='about' ref={aboutRef} className='py-16 relative overflow-hidden scroll-reveal z-10'>
             <div className='container mx-auto px-6 max-w-7xl'>
-              <div className='content-island relative p-10 md:p-16'>
+              {/* Big Island 2: Keeps borders */}
+              <div className='content-island relative p-10 md:p-16 !bg-white/80 dark:!bg-zinc-900/80 backdrop-blur-xl'>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                     
                     {/* Left Column: Copy */}

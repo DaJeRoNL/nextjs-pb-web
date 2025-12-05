@@ -96,14 +96,21 @@ export default function AboutPage() {
   return (
     <div 
       ref={mainContainerRef}
-      className="min-h-screen relative bg-gray-50 dark:bg-zinc-950 transition-colors duration-300" 
+      className="min-h-screen relative transition-colors duration-300" 
       style={{ '--scroll': '0px' } as React.CSSProperties}
     >
       
+      {/* Dynamic Parallax Background */}
       <div className="fixed-background">
-        <div className="glass-blob-static-1"></div>
-        <div className="glass-blob-static-2"></div>
-        <div className="glass-blob-static-3"></div>
+        <div className="blob-intro-1 absolute inset-0 pointer-events-none">
+           <div className="glass-blob-1"></div>
+        </div>
+        <div className="blob-intro-2 absolute inset-0 pointer-events-none">
+           <div className="glass-blob-2"></div>
+        </div>
+        <div className="blob-intro-3 absolute inset-0 pointer-events-none">
+           <div className="glass-blob-3"></div>
+        </div>
         <div className="glass-overlay dark:bg-black/60"></div>
       </div>
 
@@ -111,8 +118,8 @@ export default function AboutPage() {
 
       <div className="main-content pt-24 pb-24 relative z-10 px-4 md:px-8">
         
-        {/* --- MAIN WRAPPER CONTAINER (White/Dark) --- */}
-        <div className="container mx-auto max-w-[1400px] bg-white dark:bg-zinc-900 rounded-[2.5rem] p-8 md:p-16 shadow-2xl fix-pixelation transition-colors duration-300">
+        {/* --- MAIN WRAPPER CONTAINER --- */}
+        <div className="container mx-auto max-w-[1400px] bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl rounded-[2.5rem] p-8 md:p-16 shadow-2xl fix-pixelation transition-colors duration-300">
             
             {/* Header Section */}
             <div className="mb-16">
@@ -149,7 +156,6 @@ export default function AboutPage() {
               <div className="flex-1 flex flex-col gap-20">
 
                 {/* Hero Section */}
-                {/* Override .content-island background for Light mode contrast (Gray Island on White) */}
                 <section ref={heroRef} className="content-island fix-pixelation p-10 md:p-16 flex flex-col md:flex-row items-center gap-12 bg-gray-50 dark:bg-zinc-800 border-none opacity-0 transition-colors duration-300">
                   <div className="flex-1 text-left">
                     <p className="font-raleway font-bold uppercase tracking-wider mb-4 text-[var(--color-accent)]">About PlaceByte</p>
@@ -257,7 +263,10 @@ export default function AboutPage() {
                             className={`w-full h-full relative stroke-current ${v.color} draw-path ${v.thunder ? 'shock-hover' : ''}`}
                             viewBox="0 0 24 24"
                             fill="none"
-                            style={{ '--dash-length': v.dash } as React.CSSProperties}
+                            style={{ 
+                                '--dash-length': v.dash,
+                                transition: 'stroke-dashoffset 2s ease, opacity 0.4s ease' 
+                            } as React.CSSProperties}
                             strokeWidth="2"
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -267,6 +276,7 @@ export default function AboutPage() {
                                 key={idx}
                                 className={`draw-path draw-path-delay-${p.delay}`}
                                 d={p.d}
+                                style={{ transition: 'stroke-dashoffset 2s ease, opacity 0.4s ease' }}
                               />
                             ))}
                           </svg>
@@ -306,19 +316,13 @@ export default function AboutPage() {
 
                 {/* Timeline Section */}
                 <section ref={timelineRef} className="relative opacity-0">
-                  <div className="flex flex-col md:flex-row justify-between items-end mb-16 px-4 border-l-8 border-[var(--color-accent)] pl-6">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 px-4 border-l-8 border-[var(--color-accent)] pl-6">
                       <h2 className="font-montserrat font-bold text-3xl text-[var(--color-footer-bg)] dark:text-white">Our Journey</h2>
                       <p className="text-gray-400 dark:text-gray-500 font-raleway text-sm uppercase tracking-widest hidden md:block">Est. 2022</p>
                   </div>
                   
-                  <div className="absolute top-[50%] left-0 w-full hidden md:block z-0 -translate-y-1/2">
-                    <svg width="100%" height="150" viewBox="0 0 1200 150" preserveAspectRatio="none" className="opacity-40">
-                      <path d="M0,75 C300,0 900,150 1200,75" stroke="var(--color-accent)" strokeWidth="10" fill="none" vectorEffect="non-scaling-stroke" strokeLinecap="round" />
-                    </svg>
-                  </div>
-                  <div className="absolute top-24 bottom-0 left-8 w-1 bg-[var(--color-accent)] opacity-30 md:hidden z-0"></div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative z-10">
+                  {/* 1. The Grid (Source of Hover) */}
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative z-10 group peer">
                       {[
                           { 
                             year: '2022', 
@@ -345,7 +349,10 @@ export default function AboutPage() {
                             desc: 'Today: A complete ecosystem powering recruitment, operations, and workplace optimization.' 
                           }
                       ].map((t, i) => (
-                          <div key={i} className="content-island fix-pixelation !bg-gray-50 p-6 flex flex-col items-start hover:shadow-lg transition-all duration-300 hover:-translate-y-2 md:w-auto dark:!bg-zinc-800 border-none">
+                          <div 
+                            key={i} 
+                            className="content-island fix-pixelation !bg-gray-50 p-6 flex flex-col items-start hover:shadow-lg transition-all duration-300 hover:-translate-y-2 md:w-auto dark:!bg-zinc-800 border-none group-hover:opacity-60 hover:!opacity-100"
+                          >
                               <div 
                                 className="text-4xl font-bold mb-2" 
                                 style={{ color: t.color }}
@@ -358,10 +365,23 @@ export default function AboutPage() {
                           </div>
                       ))}
                   </div>
+
+                  {/* 2. The Stripes (Target of Hover) */}
+                  
+                  {/* Desktop Curve */}
+                  <div className="absolute top-[50%] left-0 w-full hidden md:block z-0 -translate-y-1/2 peer-hover:opacity-0 transition-opacity duration-300">
+                    <svg width="100%" height="150" viewBox="0 0 1200 150" preserveAspectRatio="none" className="opacity-40">
+                      <path d="M0,75 C300,0 900,150 1200,75" stroke="var(--color-accent)" strokeWidth="10" fill="none" vectorEffect="non-scaling-stroke" strokeLinecap="round" />
+                    </svg>
+                  </div>
+                  
+                  {/* Mobile Line */}
+                  <div className="absolute top-24 bottom-0 left-8 w-1 bg-[var(--color-accent)] opacity-30 md:hidden z-0 peer-hover:opacity-0 transition-opacity duration-300"></div>
+
                 </section>
                 
-                {/* CTA Section */}
-                <section ref={ctaRef} className="content-island fix-pixelation py-20 text-center bg-gray-50 relative overflow-hidden opacity-0 dark:bg-zinc-800 border-none">
+                {/* CTA Section - REMOVED ISLAND CLASSES */}
+                <section ref={ctaRef} className="py-20 text-center relative overflow-hidden opacity-0">
                   <div className="relative z-10">
                     <h2 className="font-montserrat font-bold text-4xl text-[var(--color-footer-bg)] dark:text-white mb-6">
                       Ready to Build the Future of Work?
