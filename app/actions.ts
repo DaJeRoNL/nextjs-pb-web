@@ -2,16 +2,14 @@
 
 import { Resend } from 'resend';
 import { z } from 'zod';
+import { validateTurnstile } from './lib/security'; // Import helper
 
-// Ensure your RESEND_API_KEY is in your .env.local file
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
-  website_url: z.string().optional(), // Honeypot
-  
-  // Specific fields
+  website_url: z.string().optional(),
   company: z.string().optional(),
   phone: z.string().optional(),
   service: z.string().optional(),
@@ -26,43 +24,26 @@ const formSchema = z.object({
 export async function sendEmail(prevState: any, formData: FormData) {
   try {
     const rawData: Record<string, any> = {};
-    const turnstileToken = formData.get('cf-turnstile-response');
+    const turnstileToken = formData.get('cf-turnstile-response') as string;
 
-    // Filter non-text data (like 'cv' and turnstile token) from rawData
+    // 1. Bot Protection (Honeypot)
+    if (formData.get('website_url')) {
+      console.warn("Bot attempt blocked (honeypot).");
+      return { success: false, message: "Spam detected." };
+    }
+
+    // 2. Centralized Turnstile Verification
+    const securityCheck = await validateTurnstile(turnstileToken);
+    if (!securityCheck.success) {
+      return { success: false, message: securityCheck.message };
+    }
+
+    // Collect Data
     formData.forEach((value, key) => {
         if (key !== 'cv' && key !== 'cf-turnstile-response') {
             rawData[key] = value;
         }
     });
-
-    // 1. Bot Protection (Honeypot)
-    if (rawData.website_url && rawData.website_url.length > 0) {
-      console.warn("Bot attempt blocked (honeypot).");
-      return { success: false, message: "Spam detected." };
-    }
-    
-    // 2. Cloudflare Turnstile Verification
-    if (!turnstileToken || typeof turnstileToken !== 'string') {
-        return { success: false, message: "Security check missing. Please refresh and try again." };
-    }
-
-    const verifyResult = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            secret: process.env.TURNSTILE_SECRET_KEY,
-            response: turnstileToken,
-        }),
-    });
-
-    const verifyOutcome = await verifyResult.json();
-
-    if (!verifyOutcome.success) {
-        console.error("Turnstile verification failed:", verifyOutcome);
-        return { success: false, message: "Security check failed. Please reload and try again." };
-    }
 
     // 3. Validate Data
     const validatedFields = formSchema.safeParse(rawData);
@@ -73,16 +54,13 @@ export async function sendEmail(prevState: any, formData: FormData) {
 
     const data = validatedFields.data;
 
+    // File Handling
     const file = formData.get('cv'); 
     let attachments = [];
-    
-    // Use 'instanceof File' and size check for reliable file detection
     if (file instanceof File && file.size > 0) {
-    
       if (file.size > 5 * 1024 * 1024) {
         return { success: false, message: "File too large (max 5MB)" };
       }
-    
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
       attachments.push({
@@ -102,7 +80,6 @@ export async function sendEmail(prevState: any, formData: FormData) {
         <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
           ${Object.entries(data).map(([key, value]) => {
             if (['website_url', 'typeParam', 'terms'].includes(key) || !value) return '';
-            
             return `
               <tr>
                 <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold; width: 180px; text-transform: capitalize;">

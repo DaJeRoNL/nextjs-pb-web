@@ -3,57 +3,38 @@
 import { Resend } from 'resend';
 import { SignJWT, jwtVerify } from 'jose';
 import { z } from 'zod';
+import { validateTurnstile } from '../lib/security'; // Import helper
+
+// *** CRITICAL FIX FROM PREVIOUS STEP ***
+// Ensure you have JWT_SECRET in your .env file!
+const JWT_SECRET_STR = process.env.JWT_SECRET; 
+if (!JWT_SECRET_STR) {
+  // Fallback for dev only, ideally throw error in prod
+  console.error("JWT_SECRET is missing in environment variables!");
+}
+const SECRET = new TextEncoder().encode(JWT_SECRET_STR || 'temporary_dev_secret_CHANGE_ME');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const SECRET = new TextEncoder().encode(process.env.TURNSTILE_SECRET_KEY || 'fallback_secret_please_change'); 
 
 const loginSchema = z.object({
   email: z.string().email(),
 });
 
-// --- HELPER: Turnstile Verification ---
-async function validateTurnstile(token: string | undefined) {
-  if (!token) return { success: false, message: "Security check missing." };
-
-  try {
-    const verifyResult = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        secret: process.env.TURNSTILE_SECRET_KEY,
-        response: token,
-      }),
-    });
-
-    const verifyOutcome = await verifyResult.json();
-    if (!verifyOutcome.success) {
-      console.error("Turnstile verification failed:", verifyOutcome);
-      return { success: false, message: "Security check failed. Please try again." };
-    }
-    return { success: true };
-  } catch (error) {
-    console.error("Turnstile error:", error);
-    return { success: false, message: "Security check error." };
-  }
-}
-
-// 1. GENERATE MAGIC LINK & SEND EMAIL
+// 1. GENERATE MAGIC LINK
 export async function sendMagicLink(prevState: any, formData: FormData) {
-  // A. Honeypot Check
+  // Honeypot
   const honeypot = formData.get('website_url');
   if (honeypot && honeypot.toString().length > 0) {
-    console.warn("Bot attempt blocked (honeypot).");
     return { success: false, message: "Spam detected." };
   }
 
-  // B. Turnstile Check
+  // Turnstile
   const turnstileToken = formData.get('cf-turnstile-response') as string;
   const securityCheck = await validateTurnstile(turnstileToken);
   if (!securityCheck.success) {
     return { success: false, message: securityCheck.message };
   }
 
-  // C. Normal Logic
   const email = formData.get('email') as string;
   const validated = loginSchema.safeParse({ email });
   if (!validated.success) {
@@ -81,7 +62,6 @@ export async function sendMagicLink(prevState: any, formData: FormData) {
           <a href="${link}" style="display: inline-block; background: #2563EB; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">
             Manage Preferences
           </a>
-          <p style="margin-top: 20px; font-size: 12px; color: #666;">If you didn't request this, you can safely ignore this email.</p>
         </div>
       `,
     });
@@ -93,7 +73,7 @@ export async function sendMagicLink(prevState: any, formData: FormData) {
   }
 }
 
-// 2. VERIFY TOKEN (Helper)
+// 2. VERIFY TOKEN
 export async function verifyMagicToken(token: string) {
   try {
     const { payload } = await jwtVerify(token, SECRET);
@@ -103,18 +83,14 @@ export async function verifyMagicToken(token: string) {
   }
 }
 
-// 3. HANDLE PREFERENCE UPDATES
-// Updated signature to accept Turnstile Token
+// 3. UPDATE PREFERENCES
 export async function updatePreferences(token: string, preferences: any, turnstileToken: string) {
-  
-  // A. Turnstile Check (Prevents Spamming Updates)
-  // Since Turnstile tokens are single-use, this prevents replaying the request 10 times.
+  // Security Check
   const securityCheck = await validateTurnstile(turnstileToken);
   if (!securityCheck.success) {
     return { success: false, message: securityCheck.message };
   }
 
-  // B. Verify Session
   const auth = await verifyMagicToken(token);
   if (!auth.valid || !auth.email) {
     return { success: false, message: 'Session expired. Please request a new link.' };
@@ -125,19 +101,7 @@ export async function updatePreferences(token: string, preferences: any, turnsti
     const emailBody = `
       <h1>User Preference Update</h1>
       <p><strong>User:</strong> ${auth.email}</p>
-      <p><strong>Action Required:</strong></p>
       <pre>${JSON.stringify(preferences, null, 2)}</pre>
-      <hr />
-      <h3>ETL Data Block:</h3>
-      <code>
-        {
-          "user_email": "${auth.email}",
-          "marketing_opt_in": ${preferences.marketing},
-          "job_updates_opt_in": ${preferences.jobs},
-          "request_deletion": ${preferences.deleteData},
-          "timestamp": "${new Date().toISOString()}"
-        }
-      </code>
     `;
 
     await resend.emails.send({
@@ -148,11 +112,10 @@ export async function updatePreferences(token: string, preferences: any, turnsti
     });
 
     if (preferences.deleteData) {
-       return { success: true, message: 'Deletion request received. We are processing your removal.' };
+       return { success: true, message: 'Deletion request received. Processing removal.' };
     }
 
     return { success: true, message: 'Preferences updated successfully.' };
-
   } catch (error) {
     return { success: false, message: 'System error. Please try again.' };
   }
