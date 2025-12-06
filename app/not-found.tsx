@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
@@ -33,24 +34,29 @@ export default function NotFound() {
       <Header />
 
       <div className="main-content flex-grow flex items-center justify-center relative z-10 px-6 py-20">
-        <div className="content-island p-10 md:p-16 text-center max-w-2xl w-full animate-fadeIn">
+        {/* UPDATED: Forced White Glassmorphism in Dark Mode */}
+        <div className="content-island p-10 md:p-16 text-center max-w-2xl w-full animate-fadeIn !bg-white/80 dark:!bg-white/80 backdrop-blur-xl dark:text-[var(--color-footer-bg)] border-none shadow-2xl">
           
-          <div className="mb-8 relative inline-block">
-            <h1 className="font-montserrat font-black text-8xl md:text-9xl text-[var(--color-footer-bg)] opacity-10 select-none">
-              404
-            </h1>
-            <div className="absolute inset-0 flex items-center justify-center">
-               <svg className="w-24 h-24 text-[var(--color-accent)] animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-               </svg>
-            </div>
+          <h1 className="font-montserrat font-black text-8xl md:text-9xl text-[var(--color-footer-bg)] opacity-10 select-none mb-6">
+            404
+          </h1>
+
+          <div className="relative w-full h-64 md:h-20 mx-auto mb-8">
+             <Image 
+               src="/404.png" 
+               alt="Page Not Found" 
+               fill 
+               className="object-contain"
+               priority
+             />
           </div>
 
-          <h2 className="font-montserrat font-bold text-3xl md:text-4xl text-[var(--color-footer-bg)] mb-4">
+          {/* Enforced dark text color for dark mode */}
+          <h2 className="font-montserrat font-bold text-3xl md:text-4xl text-[var(--color-footer-bg)] dark:text-[var(--color-footer-bg)] mb-4">
             Page Not Found
           </h2>
           
-          <p className="font-raleway text-lg text-gray-600 mb-10 leading-relaxed">
+          <p className="font-raleway text-lg text-gray-600 dark:text-gray-600 mb-10 leading-relaxed">
             It looks like this page has gone missing or never existed. 
             Even the best systems have a loose byte occasionally.
           </p>
