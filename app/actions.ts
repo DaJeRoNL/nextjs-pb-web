@@ -4,6 +4,16 @@ import { Resend } from 'resend';
 import { z } from 'zod';
 import { validateTurnstile } from './lib/security'; // Import helper
 
+const escapeHtml = (unsafe: string | number | null | undefined) => {
+  if (unsafe === null || unsafe === undefined) return '';
+  return String(unsafe)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const formSchema = z.object({
@@ -74,19 +84,21 @@ export async function sendEmail(prevState: any, formData: FormData) {
     // 4. HTML Email Template
     const emailHtml = `
       <div style="font-family: sans-serif; padding: 20px; color: #333;">
-        <h2 style="color: #000;">New Submission: ${data.name}</h2>
-        <p><strong>Source:</strong> ${data.typeParam || 'General Inquiry'}</p>
+        <h2 style="color: #000;">New Submission: ${escapeHtml(data.name)}</h2>
+        <p><strong>Source:</strong> ${escapeHtml(data.typeParam || 'General Inquiry')}</p>
         
         <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
           ${Object.entries(data).map(([key, value]) => {
+            // Skip internal fields or empty values
             if (['website_url', 'typeParam', 'terms'].includes(key) || !value) return '';
+            
             return `
               <tr>
                 <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold; width: 180px; text-transform: capitalize;">
-                  ${key.replace(/([A-Z])/g, ' $1').trim()}
+                  ${escapeHtml(key.replace(/([A-Z])/g, ' $1').trim())}
                 </td>
                 <td style="padding: 10px; border-bottom: 1px solid #eee;">
-                  ${value}
+                  ${escapeHtml(value)}
                 </td>
               </tr>
             `;

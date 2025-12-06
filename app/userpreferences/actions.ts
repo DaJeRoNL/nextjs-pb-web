@@ -5,11 +5,18 @@ import { SignJWT, jwtVerify } from 'jose';
 import { z } from 'zod';
 import { validateTurnstile } from '../lib/security'; // Import helper
 
-// *** CRITICAL FIX FROM PREVIOUS STEP ***
-// Ensure you have JWT_SECRET in your .env file!
+const escapeHtml = (unsafe: string | number | null | undefined) => {
+  if (unsafe === null || unsafe === undefined) return '';
+  return String(unsafe)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 const JWT_SECRET_STR = process.env.JWT_SECRET; 
 if (!JWT_SECRET_STR) {
-  // Fallback for dev only, ideally throw error in prod
   console.error("JWT_SECRET is missing in environment variables!");
 }
 const SECRET = new TextEncoder().encode(JWT_SECRET_STR || 'temporary_dev_secret_CHANGE_ME');
@@ -100,8 +107,8 @@ export async function updatePreferences(token: string, preferences: any, turnsti
     const subject = `[PREF_UPDATE] ${auth.email}`;
     const emailBody = `
       <h1>User Preference Update</h1>
-      <p><strong>User:</strong> ${auth.email}</p>
-      <pre>${JSON.stringify(preferences, null, 2)}</pre>
+      <p><strong>User:</strong> ${escapeHtml(auth.email)}</p>
+      <pre>${escapeHtml(JSON.stringify(preferences, null, 2))}</pre>
     `;
 
     await resend.emails.send({
