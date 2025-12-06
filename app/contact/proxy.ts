@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
   
   const cspHeader = `
@@ -29,10 +29,10 @@ export function middleware(request: NextRequest) {
   });
 
   response.headers.set('Content-Security-Policy', cspHeader.replace(/\s{2,}/g, ' ').trim());
-  response.headers.set('X-Frame-Options', 'DENY'); // Prevents your site from being embedded in an iframe (clickjacking)
-  response.headers.set('X-Content-Type-Options', 'nosniff'); // Prevents browser from guessing content types
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()'); // Block unused features
+  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
 
   return response;
 }
